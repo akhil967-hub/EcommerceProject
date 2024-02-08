@@ -1,0 +1,180 @@
+<%- include('../partials/admin/header.ejs') %>
+    <%- include('../partials/admin/header.ejs') %>
+    <!--End topbar header-->
+    <div class="clearfix"></div>
+
+    <div class="content-wrapper">
+        <div class="container-fluid">
+
+            <div class="row mt-3">
+                <div class="col-lg-6">
+                    <div class="card" style="margin-top: 60px; margin-left: 60px;">
+                        <div class="card-body">
+                            <div class="card-title">ADD NEW COUPON</div>
+                            <hr>
+                            <form method="post" action="">
+                                <div class="form-group">
+                                    <label for="input-1">Code</label>
+                                    <input type="text" name="code" class="form-control" required id="input-1"
+                                        placeholder="Enter coupon code">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="input-1">Select discount Type</label>
+                                    <select name="discountType" style="background-color:rgb(58,133,169);">
+                                        <option style="background-color:rgb(58,133,169);">Fixed</option>
+                                        <option style="background-color:rgb(58,133,169);">Percantge type</option>
+                                    </select>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label for="input-1">Discount amount</label>
+                                    <input type="number" name="discountAmount" required class="form-control" id="input-1"
+                                        placeholder='Enter discount amount'>
+                                </div>
+
+
+
+                                <div class="form-group">
+                                    <label for="input-1">Max discount amount </label>
+                                    <input type="number" name="amount" required class="form-control" id="input-1"
+                                        placeholder="Enter Max discount amount">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="input-1">Max cart amount</label>
+                                    <input type="number" name="cartamount" required class="form-control" id="input-1"
+                                        placeholder="Enter Max cart amount">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="input-1">Expiry date</label>
+                                    <input type="date" name="expirydate" required class="form-control" id="input-1"
+                                        placeholder="Enter Expiry date">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="input-1">Max coupons</label>
+                                    <input type="number" name="couponcount" required class="form-control" id="input-1"
+                                        placeholder="Enter count of coupons">
+                                </div>
+
+                             
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-light px-5"><i class="icon-lock"></i>
+                                        ADD</button>
+                                </div>
+                            </form>
+                            <% if(typeof message !=='undefined' ){ %>
+                                <h6><br>
+                                    <%= message %>
+                                </h6>
+                                <% } %>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!--End Row-->
+
+
+
+            <script>
+                const input = document.querySelector('input[type="file"]');
+                const preview = document.getElementById('preview');
+              
+                input.addEventListener('change', () => {
+                  const files = input.files;
+                  preview.innerHTML = '';
+                  for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      const image = new Image();
+                      image.src = reader.result;
+                      image.onload = () => {
+                        const MAX_WIDTH = 200;
+                        const MAX_HEIGHT = 200;
+                        let width = image.width;
+                        let height = image.height;
+                        if (width > height) {
+                          if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                          }
+                        } else {
+                          if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                          }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(image, 0, 0, width, height);
+                        const dataUrl = canvas.toDataURL();
+                        const wrapper = document.createElement('div');
+                        wrapper.classList.add('image-wrapper');
+                        const img = document.createElement('img');
+                        img.src = dataUrl;
+                        wrapper.appendChild(img);
+                        const removeIcon = document.createElement('i');
+                        removeIcon.classList.add('fa', 'fa-times');
+                        removeIcon.addEventListener('click', () => {
+                          wrapper.remove();
+                          if (preview.children.length === 0) {
+                            preview.classList.remove('has-images');
+                          }
+                        });
+                        wrapper.appendChild(removeIcon);
+                        preview.appendChild(wrapper);
+                        preview.classList.add('has-images');
+                      };
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                });
+              
+                const form = document.getElementById('my-form');
+                form.addEventListener('submit', async (event) => {
+                  event.preventDefault();
+                  const images = [];
+                  for (let i = 0; i < preview.children.length; i++) {
+                    const child = preview.children[i];
+                    if (child.classList.contains('image-wrapper')) {
+                      const img = child.querySelector('img');
+                      if (img) {
+                        const dataUrl = img.src;
+                        if (!child.classList.contains('removed')) { // only add images that have not been removed
+                          images.push(dataUrl);
+                        }
+                      }
+                    }
+                  }
+                  try {
+                    // save the images to the database
+                    const response = await fetch('/api/upload', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({ images })
+                    });
+                    if (response.ok) {
+                      // handle success
+                    } else {
+                      // handle error
+                    }
+                  } catch (error) {
+                    // handle error
+                  }
+                });
+              </script>
+              
+
+            <%- include('../partials/admin/footer.ejs') %>
+
+            <%- include('../partials/admin/footer.ejs') %>

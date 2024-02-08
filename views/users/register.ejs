@@ -1,0 +1,206 @@
+<%- include('../partials/users/loginheader.ejs') %>
+
+	<!--================Login Box Area =================-->
+	<section class="login_box_area section-margin">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6">
+					<div  >
+						<img src="https://e0.pxfuel.com/wallpapers/529/357/desktop-wallpaper-gold-jewellery-design-gold-jewelry.jpg" 
+						height="210%" width="100%" alt=" ">
+
+						<div class="hover">
+							 
+						</div>
+					</div>
+					<p> Already Have an Account?	<a  href="/login">Login Now</a></p>
+
+
+				</div>
+				<div class="col-lg-6">
+					<div class="login_form_inner register_form_inner" >
+						
+
+						<form class="row login_form" action="/register" method="post" id="register_form">
+							<div class="col-md-12 form-group">
+								<input type="text" class="form-control" id="name" required name="name" style="color: black;" placeholder="Username"
+									onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+									<div class="d-none " id="name_error" style="color: red;" >Name must have 3-30 letters </div>								
+							</div>
+							<div class="col-md-12 form-group">
+								<input type="email" class="form-control" id="email"  required name="email" style="color: black;"
+									placeholder="Email Address" onfocus="this.placeholder = ''"
+									onblur="this.placeholder = 'Email Address'">
+									<div class="d-none" id="email_error" style="color: red;" >Please enter valid Email-id</div>							<div class="col-md-12 form-group">
+							</div>
+								<input type="number" class="form-control" id="mobile" required name="mobile" style="color: black;"
+									placeholder="Enter mobile number" onfocus="this.placeholder = ''"
+									onblur="this.placeholder = 'Mobile number'">
+									<div class="d-none " id="mobile_error" style="color: red;" >Must have 10 numbers</div>							<div class="col-md-12 form-group">
+							</div>
+								<input type="password" class="form-control" id="password" required name="password" style="color: black;"
+									placeholder="Password" onfocus="this.placeholder = ''"
+									onblur="this.placeholder = 'Password'">
+									<div class="d-none " id="password_error" style="color: red;" >Password must be Alpha-Numeric <br> Must have special character <br> Minimum length-7</div>
+							</div>
+							<div class="col-md-12 form-group">
+								<input type="password" class="form-control" id="confirmPassword" required  name="confirmPassword" style="color: black;"
+									placeholder="Confirm Password" onfocus="this.placeholder = ''"
+									onblur="this.placeholder = 'Confirm Password'">
+									<div class="d-none " id="password_error1" style="color: red;" >Password must match</div>
+
+							</div>
+							<div class="col-md-12 form-group">
+								<div class="creat_account">
+									<!-- <input type="checkbox" id="f-option2" name="selector">
+									<label for="f-option2">Keep me logged in</label> -->
+								</div>
+							</div>
+							<div class="col-md-12 form-group">
+								<button type="submit" value="submit" id="register"
+									class="button button-register w-100">Register</button>
+							</div>
+						</form>
+
+						<script>
+							document.addEventListener("DOMContentLoaded", function() {
+								var nameInput = document.getElementById("name");
+								var emailInput = document.getElementById("email");
+								var mobileInput = document.getElementById("mobile");
+								var passwordInput = document.getElementById("password");
+								var confirmPasswordInput = document.getElementById("confirmPassword");
+
+								
+								var nameError = document.getElementById('name_error')
+								var emailError = document.getElementById('email_error')
+								var mobileError = document.getElementById('mobile_error')
+								var passwordError = document.getElementById("password_error");
+								var passwordError1 = document.getElementById("password_error1");
+
+								// NAME VALIDATION
+								nameInput.addEventListener("input", function() {
+									var name = nameInput.value.trim(); // Remove leading and trailing whitespaces
+
+        							if (name.length > 3 && name.length <= 30) {
+            								nameError.classList.add("d-none");
+       													 } else {
+           										 nameError.classList.remove("d-none");
+        										}
+									
+								});
+
+								// EMAIL VALIDATION
+								emailInput.addEventListener("input", function() {
+									var email = emailInput.value;
+									var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+									if (emailPattern.test(email)) {
+										emailError.classList.add("d-none");
+										} else {
+										emailError.classList.remove("d-none");
+														}
+								});
+
+								// MOBILE VALIDATION
+								mobileInput.addEventListener("input", function() {
+									var mobile = mobileInput.value;
+							
+									if (mobile.length === 10 && /^\d+$/.test(mobile)) {
+                                    mobileError.classList.add("d-none");
+                                     } else {
+                                       mobileError.classList.remove("d-none");
+                                     }
+								});
+
+							// PASSWORD VALIDATION
+								passwordInput.addEventListener("input", function() {
+									var password = passwordInput.value;
+							
+									if (password.length <= 6 || !/^(?=.*[a-zA-Z])(?=.*\d).*$/.test(password)) {
+                                      passwordError.classList.remove("d-none");
+                                      } else {
+                                       passwordError.classList.add("d-none");
+                                       }
+								});
+								// CONFIRM PASSWORD VALIDATION
+								confirmPasswordInput.addEventListener("input", function() {
+									var password = passwordInput.value;
+									var confirmPassword = confirmPasswordInput.value;
+							
+									if (password !== confirmPassword) {
+										passwordError1.classList.remove("d-none");
+									} else {
+										passwordError1.classList.add("d-none");
+									}
+								});
+
+
+							});
+							</script> 
+
+							
+								
+							
+
+						<%
+						if(typeof message !== 'undefined'){
+						  %>
+						  <h4 style="color: rgb(232, 9, 9);"><%= message %></h4>
+						  <%
+						}
+					   %> 
+
+			
+	</section>
+	<!--================End Login Box Area =================-->
+	<script>
+
+		const name = document.getElementById('name')
+		const email = document.getElementById('email')
+		const mobile=document.getElementById('mobile')
+        const password = document.getElementById('password')
+         
+		name.addEventListener('input',()=>{
+          if(name.value.trim().length==''){
+            name.setCustomValidity('You must enter your good name')
+          }else{
+            name.setCustomValidity("")
+          }
+        })
+
+		email.addEventListener('input',()=>{
+          if(email.value.trim().length==''){
+            email.setCustomValidity('Please enter your email ID')
+          }else{
+            email.setCustomValidity("")
+          }
+        })
+
+
+		mobile.addEventListener('input',() => {
+          if(mobile.value.trim().length== 10){
+			mobile.setCustomValidity("")
+          }else{
+			mobile.setCustomValidity('mobile number should be 10 digit')
+          }
+        })
+
+		
+        password.addEventListener('input',() => {
+          if(password.value.trim().length< 6){
+          password.setCustomValidity('password requires 6 characters minimum and maximum of 10 characters')
+          }else if(password.value.trim().length > 10){
+			password.setCustomValidity('Password should only contain 10 characters maximum and 6 minimum')
+		  }
+		  else{
+            password.setCustomValidity("")
+          }
+        })
+
+       
+      </script>
+
+
+</body>
+
+</html>

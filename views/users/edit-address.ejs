@@ -1,0 +1,141 @@
+<style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+  
+    form {
+      margin-top: 100px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width:30%
+    }
+  
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+  
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+  
+    button {
+      background-color: green;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+  
+ <!-- Assuming this is your edit-address.ejs file -->
+<form method="POST" action="/edit-address?index=<%= index %>" onsubmit="return validateForm()">
+  
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" value="<%= editedAddress.firstname + ' ' + editedAddress.lastname %>" >
+  <p id="nameError" style="color: red; display: none; margin-top:-10px;" >Name must be filled out</p>
+
+  <label for="address">House Name:</label>
+  <input type="text" id="address" name="address" value="<%= editedAddress.address %>"  >
+  <p id="addressError" style="color: red; display: none;  margin-top:-10px;" >Address must be filled out</p>
+
+  <label for="city">City:</label>
+  <input type="text" id="city" name="city" value="<%= editedAddress.city %>" >
+  <p id="cityError" style="color: red; display: none;  margin-top:-10px;" >City must be filled out</p>
+
+  <label for="state">State:</label>
+  <input type="text" id="state" name="state" value="<%= editedAddress.state %>" >
+  <p id="stateError" style="color: red; display: none;  margin-top:-10px;" >State must be filled out</p>
+
+  <label for="pin">PIN:</label>
+  <input type="text" id="pin" name="pin" value="<%= editedAddress.pin %>" >
+  <p id="pinError" style="color: red; display: none;  margin-top:-10px;" >Pin must be filled out</p>
+
+  <label for="country">Country:</label>
+  <input type="text" id="country" name="country" value="<%= editedAddress.country %>" >
+  <p id="countryError" style="color: red; display: none;  margin-top:-10px;" >Country must be filled out</p>
+
+  <button type="submit">Save Changes</button>
+</form>
+
+
+
+<script>
+  function validateForm() {
+    console.log("Validation started");
+    // Get form values
+    var name = document.getElementById('name').value;
+    var address = document.getElementById('address').value;
+    var city = document.getElementById('city').value;
+    var state = document.getElementById('state').value;
+    var pin = document.getElementById('pin').value;
+    var country = document.getElementById('country').value;
+
+    // Check for white space at the beginning
+    if (/^\s*$/.test(name)) {
+      document.getElementById('nameError').style.display = 'block';
+      return false;
+    } else {
+      document.getElementById('nameError').style.display = 'none';
+
+    }
+
+    // Check for empty fields
+    // if (name === "") {
+    //   document.getElementById('nameError').style.display = 'block';
+    //   return false;
+    // } else {
+    //   document.getElementById('nameError').style.display = 'none';
+    // }
+
+    if (/^\s*$/.test(address)) {
+      document.getElementById('addressError').style.display = 'block';
+      return false;
+    } else {
+      document.getElementById('addressError').style.display = 'none';
+    }
+
+    if (/^\s*$/.test(city)) {
+      document.getElementById('cityError').style.display = 'block';
+      return false;
+    } else {
+      document.getElementById('cityError').style.display = 'none';
+    }
+
+    if (/^\s*$/.test(state)) {
+      document.getElementById('stateError').style.display = 'block';
+      return false;
+    } else {
+      document.getElementById('stateError').style.display = 'none';
+    }
+
+    if (/^\s*$/.test(pin)) {
+      document.getElementById('pinError').style.display = 'block';
+      return false;
+    } else {
+      document.getElementById('pinError').style.display = 'none';
+    }
+
+    if (/^\s*$/.test(country)) {
+      document.getElementById('countryError').style.display = 'block';
+      return false;
+    } else {
+      document.getElementById('countryError').style.display = 'none';
+    }
+
+    // Validation passed
+    return true;
+  }
+</script>

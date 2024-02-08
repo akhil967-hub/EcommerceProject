@@ -1,0 +1,71 @@
+<%- include('../partials/admin/header.ejs') %>
+
+
+    <div class="clearfix"></div>
+
+
+    <div class="content-wrapper">
+        <div class="container-fluid">
+
+            <div style="margin-top: 20px;">
+                <button type="button" class="btn btn-outline-info"><a href="/admin/banners/add">ADD BANNER</a></button>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card" style="margin-top: 20px;">
+                        <div class="card-body">
+                            <h5 class="card-title">BANNER DETAILS</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Image</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (message.length> 0) { %>
+                                            <% for (let i=0; i < message.length; i++) { %>
+                                                <tr>
+                                                    <th scope="row">
+                                                        <%= i+1 %>
+                                                    </th>
+                                                    <td>
+                                                        <%= message[i].name %>
+                                                    </td>
+
+                                                    <td>
+                                                        <img style="width: 80px; height: 80px;"
+                                                            src="/productimages/<%= message[i].image %>" alt="test">
+                                                    </td>
+
+                                                    <% if (message[i].status==='true' ) { %>
+                                                        <td>VISIBLE</td>
+                                                        <td><a style="color:rgb(8, 8, 8);"
+                                                                href="/admin/banners/statuschange?id=<%=message[i]._id%>">HIDE</a>
+                                                        </td>
+                                                        <% } else { %>
+                                                            <td>HIDDEN</td>
+                                                            <td><a style="color: greenyellow;"
+                                                                    href="/admin/banners/statuschange?id=<%=message[i]._id%>">SHOW</a>
+                                                            </td>
+                                                            <% } %>
+
+                                                </tr>
+                                                <% } %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="3">Products not found</td>
+                                                        </tr>
+                                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--End Row-->

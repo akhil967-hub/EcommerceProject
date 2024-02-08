@@ -1,0 +1,237 @@
+<%- include('../partials/admin/header.ejs') %>
+
+
+    <!--End topbar header-->
+<style>
+    .image-container {
+    margin-right: 10px; /* Adjust the margin for spacing */
+    display: inline-block;
+}
+
+.remove-button {
+    display: block;
+    margin-top: 5px; /* Adjust the margin for spacing between the image and the button */
+}
+
+</style>
+    
+<div class="clearfix"></div>
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+
+        <div class="row mt-3">
+            <div class="col-lg-6">
+                <div class="card" style="margin-top: 60px; margin-left: 60px;">
+                    <div class="card-body">
+                        <div class="card-title">EDIT PRODUCT</div>
+                        <hr>
+                        <form method="post" enctype="multipart/form-data" id="productForm">
+                            <div class="form-group">
+                                <label for="input-1">Product Name</label>
+                                <input type="text" name="name" class="form-control" required value="<%=productData.name%>" id="input-1" placeholder="Enter product name">
+                                <div class="d-none" id="name_error" 
+                                style="color: red;">Product Name is required, should not start with spaces, and should have a minimum of 3 letters</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="input-price">Price</label>
+                                <input type="number" name="price" class="form-control" id="input-price" required value="<%=productData.price%>">
+                                <div class="d-none" id="price_error" style="color: red;">Price must be a positive number</div>
+                                <div class="d-none" id="negative_price_warning" style="color: red;">Warning: Negative price entered</div>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <select name="category" style="background-color:rgb(58,133,169);" class="form-select" id="floatingSelect"
+                                    aria-label="Floating label select example" >
+                                    <% if(categoryData.length> 0) {
+                                        for(let i=0; i < categoryData.length; i++) { %>
+                                            <option value="<%= categoryData[i].name %>" style="background-color:rgb(58,133,169);">
+                                                <%= categoryData[i].name %>
+                                            </option>
+                                        <% } } %>
+                                </select>
+                                <label for="floatingSelect">Select category</label>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="input-description">Description</label>
+                                <input type="text" name="description" class="form-control" id="input-description" required
+                                    value="<%=productData.description%>">
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <div class="d-flex flex-coloum " style="justify-content: space-between; ">
+                                    <%productData.image.forEach((value,index)=>{%>
+                                        <div class="border border-dark border-2">
+                                            <img height="100px" src="/productimages/<%=productData.image[index]%>" alt="" width="100px">
+                                            
+                                             <div style="padding-left: 1em;">
+                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                    onclick="deletePhoto('<%=index%>','<%=productData._id%>')">Remove</button>
+                                            </div>
+                                        </div>
+                                        
+                                    <%})%>
+                                    <div class="image-preview" id="image-preview">
+                                        <!-- Images will be displayed here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="input-image">Image</label>
+                                <input type="file" multiple name="image" class="form-control" id="input-image" 
+                                onchange="previewImages(event)">
+                            </div>
+
+                            <script>
+                                function previewImages(event) {
+                                    const input = event.target;
+                                    const previewContainer = document.getElementById('image-preview');
+                                    previewContainer.innerHTML = ''; // Clear previous previews
+                                
+                                    if (input.files) {
+                                        for (let i = 0; i < input.files.length; i++) {
+                                            const reader = new FileReader();
+                                            reader.onload = function (e) {
+                                                // Create a container for each image and button
+                                                const container = document.createElement('div');
+                                                container.classList.add('image-container');
+                                
+                                                // Create the image element
+                                                const imgElement = document.createElement('img');
+                                                imgElement.src = e.target.result;
+                                                imgElement.classList.add('preview-image');
+                                                imgElement.style.width = '90px'; // Set the desired width
+                                                imgElement.style.height = '100px';
+                                
+                                                // Create the remove button
+                                                const removeButton = document.createElement('button');
+                                                removeButton.innerText = 'Remove';
+                                                removeButton.classList.add('remove-button');
+                                                removeButton.onclick = function() {
+                                                    container.remove(); // Remove the container when the button is clicked
+                                                };
+                                
+                                                // Append elements to the container
+                                                container.appendChild(imgElement);
+                                                container.appendChild(removeButton);
+                                
+                                                // Append the container to the preview container
+                                                previewContainer.appendChild(container);
+                                            };
+                                            reader.readAsDataURL(input.files[i]);
+                                        }
+                                    }
+                                }
+                                </script>
+
+                            <div class="form-group">
+                                <label for="input-stock">Select stock</label>
+                                <input type="number" name="stock" class="form-control" id="input-stock" required value="<%=productData.stock%>">
+                                <div class="d-none" id="stock_error" style="color: red;">Stock must be a positive number</div>
+                                <div class="d-none" id="negative_stock_warning" style="color: red;">Warning: Negative stock entered</div>
+                            </div>
+
+                            
+
+                            <input type="hidden" name="id" value="<%=productData._id%>">
+                            <div class="form-group">
+                                <button type="button" onclick="validateForm()" class="btn btn-light px-5"><i class="icon-lock"></i> Update</button>
+                            </div>
+                        </form>
+
+                        <script>
+                            function validateForm() {
+                                const nameInput = document.querySelector('input[name="name"]');
+                                const priceInput = document.querySelector('input[name="price"]');
+                                const stockInput = document.querySelector('input[name="stock"]');
+                                const nameError = document.getElementById('name_error');
+                                const priceError = document.getElementById('price_error');
+                                const stockError = document.getElementById('stock_error');
+                                const negativePriceWarning = document.getElementById('negative_price_warning');
+                                const negativeStockWarning = document.getElementById('negative_stock_warning');
+
+                                const isNameValid = validateProductName(nameInput, nameError);
+                                const isPriceValid = validateNumberInput(priceInput, priceError, negativePriceWarning);
+                                const isStockValid = validateNumberInput(stockInput, stockError, negativeStockWarning);
+
+                                if (isNameValid&& isPriceValid && isStockValid) {
+                                    // Submit the form if both price and stock are valid
+                                    document.getElementById('productForm').submit();
+                                }
+                            }
+
+                            function validateProductName(input, errorElement) {
+                                const name = input.value.trim(); // Trim leading and trailing white spaces
+
+                                if (name.length >=3 && !name.startsWith(" ")) {
+                                  errorElement.classList.add("d-none");
+                                    return true;
+                                } else {
+                                    errorElement.classList.remove("d-none");
+                                    return false;
+                                }
+                            }
+
+                            function validateNumberInput(input, errorElement, warningElement) {
+                                const value = parseFloat(input.value);
+
+                                if (!isNaN(value) && value >= 0) {
+                                    errorElement.classList.add("d-none");
+                                    warningElement.classList.add("d-none");
+                                    return true;
+                                } else if (value < 0) {
+                                    errorElement.classList.add("d-none");
+                                    warningElement.classList.remove("d-none");
+                                    return false;
+                                } else {
+                                    errorElement.classList.remove("d-none");
+                                    warningElement.classList.add("d-none");
+                                    return false;
+                                }
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+                            <% if(typeof message !=='undefined' ){ %>
+                                <h6><br>
+                                    <%= message %>
+                                </h6>
+                                <% } %>
+              
+            <!--End Row-->
+
+            
+
+                    <script>
+                function deletePhoto(position, id) {
+    fetch("/admin/delete_image", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            position: position,
+            id: id,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+}
+
+            </script>
+            <%- include('../partials/admin/footer.ejs') %>

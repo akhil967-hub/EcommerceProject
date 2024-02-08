@@ -1,0 +1,81 @@
+<%- include('../partials/admin/header.ejs') %>
+
+
+  <div class="clearfix"></div>
+
+
+  <div class="content-wrapper">
+    <div class="container-fluid">
+
+      <div style="margin-top: 20px;">
+        <button type="button" class="btn btn-outline-info"><a href="/admin/coupons/add">ADD COUPONS</a></button>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card" style="margin-top: 20px;">
+            <div class="card-body">
+              <h5 class="card-title">COUPON DETAILS</h5>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Coupon code</th>
+                      <th scope="col">Discount amount</th>
+                      <th scope="col">Expiry Date</th>
+                      <!-- <th scope="col">Mx-crt-amt </th> -->
+                      <!-- <th scope="col">Max discount</th>
+                      <th scope="col">Limit</th>
+                      <th scope="col">Status</th> -->
+                      <!-- <th scope="col">Action</th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (message.length> 0) { %>
+                      <% for (let i=0; i < message.length; i++) { %>
+                        <tr>
+                          <th scope="row">
+                            <%= i+1 %>
+                          </th>
+                          <td>
+                            <%= message[i].code %>
+                          </td>
+                          <td>
+                            <%= message[i].discountAmount%>(<%=message[i].discountType%>) %>
+                          </td>
+                          <td>
+                            <%= message[i].expiryDate.toISOString().substring(0,10)%>
+                          </td>
+                          <!-- <td>
+                            <%= message[i].maxCartAmount %>
+                          </td>
+                          <td>
+                            <%= message[i].maxDiscountAmount %>
+                          </td>
+                          <td>
+                            <%= message[i].maxUsers %>
+                          </td>
+                          <td>
+                            <%= message[i].status %>
+                          </td> -->
+                          <td>
+                            <button type="button" class="btn btn-outline-info"><a
+                                href="/admin/coupons/delete?id=<%= message[i]._id%>">delete</a></button>
+                            <button type="button" class="btn btn-outline-info"><a
+                                href="/admin/coupons/edit?id=<%= message[i]._id%>">edit</a></button>
+                          </td>
+                        </tr>
+                        <% } %>
+                          <% } else { %>
+                            <tr>
+                              <td colspan="3">Coupons not found</td>
+                            </tr>
+                            <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!--End Row-->

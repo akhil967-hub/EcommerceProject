@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Opal Jwels</title>
+    <!-- loader-->
+    <link href="css/pace.min.css" rel="stylesheet" />
+    <script src="js/pace.min.js"></script>
+    <!--favicon-->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <!-- simplebar CSS-->
+    <link href="plugins/simplebar/css/simplebar.css" rel="stylesheet" />
+    <!-- Bootstrap core CSS-->
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <!-- animate CSS-->
+    <link href="css/animate.css" rel="stylesheet" type="text/css" />
+    <!-- Icons CSS-->
+    <link href="css/icons.css" rel="stylesheet" type="text/css" />
+    <!-- Sidebar CSS-->
+    <link href="css/sidebar-menu.css" rel="stylesheet" />
+    <!-- Custom Style-->
+    <link href="css/app-style.css" rel="stylesheet" />
+
+</head>
+
+<body class="bg-theme bg-theme1">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card" style="margin-top: 40px;">
+                    <div  style="background-color: rgba(0, 4, 12, 0.692)" class="card-body">
+                        <h5 class="card-title">Order Details</h5>
+                        <div  class="table-responsive">
+                            <table  class="table table-hover">
+                                <thead  >
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Product Name</th>
+                                        <th scope="col">Order Date</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Paid</th>
+                                        <th scope="col">Payment Method</th>
+                                        <th scope="col"></th>
+
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Action</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <% if (message.length> 0) { %>
+                                        <% for (let i = message.length - 1; i >= 0; i--) { %>                       
+                                            <tr>
+                                            <th scope="row">
+                                              <%= message.length - i %>
+                                            </th>
+
+                                           
+                                                <td>
+                                                    <% message[i].product.forEach(function(product) { %>
+                                                        <%= product.productId.name %> <br>
+                                                    <% }); %>
+                                                </td>
+                                                
+                                                  
+                                                <td>
+
+                                                    <%= message[i].date.toISOString().substring(0,10) %>
+                                                </td>
+                                                
+                                                 
+                                                <td>
+                                                    <%= message[i].totalAmount %>
+                                                </td>
+                                               
+                                                <td>
+                                                    <%= message[i].paid %>
+                                                </td>
+                                                <td>
+                                                    <%= message[i].paymentMethod %>
+                                                </td>
+                                               
+                                                <td>
+                                                   
+                                                    <a href="/singleorderview?id=<%= message[i]._id %>"> View Details</a>
+                                                   
+                                               
+                                            </td>
+                                                
+                                                <% if (message[i].status=='placed' ) { %>
+                                                    <td>Placed</td>
+                                                    <td><a style="color:rgb(228, 19, 19);"
+                                                            href="/editorder?id=<%=message[i]._id%>">Cancel</a>
+                                                    </td>
+                                                <% } %>
+
+                                                <% if (message[i].status=='req-for-cancellation' ) { %>
+                                                    <td>Requested for cancellation</td>
+                                                    <td>-</td>
+                                                <% } %>
+
+                                                <% if (message[i].status=='cancelled' ) { %>
+                                                    <td>cancelled</td>
+                                                    <td>-</td>
+                                                <% } %>
+
+                                                <% if (message[i].status=='delivered' ) { %>
+                                                    <td>Shipped</td>
+                                                    <td><a style="color:rgb(228, 19, 19);"
+                                                        href="/editorder?id=<%=message[i]._id%>">Return</a>
+                                                </td>
+                                                <% } %>
+
+                                                <% if (message[i].status=='req-for-return' ) { %>
+                                                    <td>Requested for return</td>
+                                                    <td>-</td>
+                                                <% } %>
+
+                                                <% if (message[i].status=='returned' ) { %>
+                                                    <td>Returned</td>
+                                                    <td>-</td>
+                                                <% } %>
+
+                                            </tr>
+                                            <% } %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="3">Orders not found</td>
+                                                    </tr>
+                                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 50px;margin-bottom: 50px;margin-left: 45%;" >
+                <button style="background-color: rgba(97, 6, 243, 0.788);">
+                <a href="/shop">CONTINUE SHOPPING</a></button>
+            </div>
+        </div><!--End Row-->
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- simplebar js -->
+    <script src="plugins/simplebar/js/simplebar.js"></script>
+    <!-- sidebar-menu js -->
+    <script src="js/sidebar-menu.js"></script>
+
+    <!-- Custom scripts -->
+    <script src="js/app-script.js"></script>
+
+</body>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!--End Row-->
+    </div>
+
+
+
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- simplebar js -->
+    <script src="plugins/simplebar/js/simplebar.js"></script>
+    <!-- sidebar-menu js -->
+    <script src="js/sidebar-menu.js"></script>
+
+    <!-- Custom scripts -->
+    <script src="js/app-script.js"></script>
+
+</body>
+
+</html>

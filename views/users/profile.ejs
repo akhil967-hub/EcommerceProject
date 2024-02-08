@@ -1,0 +1,192 @@
+<%- include('../partials/users/header.ejs') %>
+<head>
+  
+  <style>
+    .horizontal-address-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  
+    .horizontal-address {
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #181717;
+    }
+  </style>
+
+</head>
+
+<body  style="background-color: white;">
+
+  
+
+  <!-- Start wrapper-->
+  <div  id="wrapper">
+
+    <div class="clearfix"></div>
+   
+    <div   class="content-wrapper">
+      <div  class="container-fluid">
+        <div  class="row mt-3">
+          <div class="col-lg-4">
+            <!-- Optional content for the left side if needed -->
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-lg-10">
+        <div style="background-color:rgb(191, 201, 191);font-family: Georgia, 'Times New Roman', Times, serif;margin-left:20%;" class="card">
+          <div   class="card-body">
+            <ul  class="nav nav-tabs nav-tabs top-icon nav-justified">
+              <li class="nav-item">
+                <a href="javascript:void();" data-target="#profile" data-toggle="pill" class="nav-link active">
+                  <i class="icon-user"></i> <span class="hidden-xs">Profile</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="javascript:void();" data-target="#messages" data-toggle="pill" class="nav-link">
+                  <i class="icon-envelope-open"></i> <span class="hidden-xs">Address</span>
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content p-2">
+              <div class="tab-pane active" id="profile">
+                <br>
+                <div  class="row">
+                  <div  class="col-md-12">
+                    <h5 style=" font-family: Georgia, 'Times New Roman', Times, serif;">Name: <%= userData.name %></h5>
+                    <h5 style=" font-family: Georgia, 'Times New Roman', Times, serif;">Mobile Number: <%= userData.mobile %></h5>
+                    <h5 style=" font-family: Georgia, 'Times New Roman', Times, serif;">Email: <%= userData.email %></h5>
+                  </div>
+                  <div class="col-md-12">
+                    <h5 class="mt-2 mb-3"><span class="fa fa-home-o ion-clock float-right"></span></h5>
+                    <div class="table-responsive">
+                      <!-- Additional profile content goes here if needed -->
+                    </div>
+                  </div>
+                </div>
+                <button style="background-color: transparent; border-color: rgb(13, 13, 14);">
+                  <a href="/edit?id=<%= userData._id %>">Edit</a>
+                </button>
+ 
+                
+                <!-- /row -->
+              </div>
+  
+              <!-- MESSAGES (Addresses) -->
+              <div class="tab-pane" id="messages">
+                <div class="table-responsive">
+                  <h4>ADDRESS</h4>
+                  <br>
+                  <div class="horizontal-address-container">
+                    <% if (addressData && addressData.address.length > 0) { %>
+                      <% addressData.address.forEach((address,index) => { %>
+                        <div class="horizontal-address">
+                           <%= address.address %>,
+                          <br><%= address.city %>,<br><%= address.state %><br><%= address.country
+                          %><br>
+                          <%= address.pin %>
+                          <br>
+                          <br>
+                          <form method="POST" action="/delete-address/<%= index %>" style="display:inline;">
+                            <button type="submit" style="background-color:brown; color:white;">Delete</button>
+                          </form>
+                          <!-- <form method="POST" action="/edit-address?id=<%= userData._id%> &index=<%= index %>" style="display:inline;">
+                            <button type="submit" style="background-color:blueviolet; color:white;">Edit</button>
+                          </form> -->
+                          <button style="background-color: transparent; border-color: rgb(2, 2, 249);">
+                            <a href="/edit-address?id=<%= userData._id%> &index=<%= index %>">Edit</a>
+                          </button>
+
+                        </div>
+                        
+                        <div style="margin-top: 18%;">
+                       </div>
+                      <% }) %>
+                    <% } else { %>
+                     <h5 style="margin-right: 40px;">No addresses found...</h5> 
+                     <br>
+                  <div>
+                       
+                     <% } %>
+                  </div>
+                  </div>
+                  <div class="shoping__cart__btns">
+                  <a href="/add-address">Add Address</a></button>
+                  </div>
+                  <div style="margin-top: 20px;">
+                </div>
+                </div>
+              </div>
+  
+              <!-- Additional Tabs can be added as needed -->
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+  <div >
+    <a href="/myorders"><button type="button" class="btn btn-primary btn-lg btn-block" 
+      style="background-color: rgb(9,143,182);margin-left: 350px;">MY ORDERS</button></a>
+  </div> 
+  <div style="margin-top: 10px; " ></div>
+    <!--start overlay-->
+    <div class="overlay toggle-menu"></div>
+    <!--end overlay-->
+
+  </div>
+  <!-- End container-fluid-->
+  </div><!--End content-wrapper-->
+  
+
+  </div><!--End wrapper-->
+ 
+   
+    <div style="margin-bottom: 5%; margin-top: 5%;">
+      <a href="/wallet" style="display: block; width: 100%; ">
+        <button type="button" class="btn btn-primary btn-lg btn-block" style="background-color: rgb(102, 104, 102); color: white; width: 100%; border-radius: 0;">WALLET : Rs.<%= userData.wallet%></button>
+      </a>
+    </div>
+
+
+<!-- User Profile Page -->
+
+
+<script>
+  
+
+  function shareViaEmail() {
+    const referralCode = document.getElementById('referralCode').innerText;
+    const userEmail = prompt('Enter your friend\'s email:');
+    // Use a backend API to send the email with the referral code
+  }
+
+  // function shareOnFacebook() {
+  //   const referralCode = document.getElementById('referralCode').innerText;
+  //   // Use the Facebook API to share a post with the referral code
+  // }
+</script>
+
+  
+  <!-- Bootstrap core JavaScript-->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+
+  <!-- simplebar js -->
+  <script src="plugins/simplebar/js/simplebar.js"></script>
+  <!-- sidebar-menu js -->
+  <script src="js/sidebar-menu.js"></script>
+
+  <!-- Custom scripts -->
+  <script src="js/app-script.js"></script>
+
+</body>
+
+ 
+
+
+<%- include('../partials/users/footer.ejs') %>

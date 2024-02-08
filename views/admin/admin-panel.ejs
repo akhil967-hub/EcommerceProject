@@ -1,0 +1,345 @@
+<%- include('../partials/admin/header.ejs') %>
+
+  <div class="clearfix"></div>
+
+  <div class="content-wrapper">
+    <div class="container-fluid">
+
+      <!--Start Dashboard Content-->
+
+      <!---------------------revenue----total users------total  order------total products----------  -->
+      <div class="card mt-3">
+        <div class="card-content">
+          <div class="row row-group m-0">
+
+            <div class="col-12 col-lg-6 col-xl-3 border-light">
+              <div class="card-body">
+                <h5 class="text-white mb-0">
+                  <% if(total.length==0){ %>
+                    ₹ <span>0</span>
+                    <% }else{ %>
+                      <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">₹ <%=total[0].total%>
+                      </p>
+                      <% } %><span class="float-right"></span>
+                </h5>
+                <div class="progress my-3" style="height:3px;">
+                  <div class="progress-bar" style="width:55%"></div>
+                </div>
+                <p class="mb-0 text-white small-font">Total Revenue <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6 col-xl-3 border-light">
+              <div class="card-body">
+                <h5 class="text-white mb-0">
+                  <%= user_count %> <span class="float-right"><i class="fa fa-users"></i></span>
+                </h5>
+                <div class="progress my-3" style="height:3px;">
+                  <div class="progress-bar" style="width:55%"></div>
+                </div>
+                <p class="mb-0 text-white small-font">Total Users <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6 col-xl-3 border-light">
+              <div class="card-body">
+                <h5 class="text-white mb-0">
+                  <%= order_count %> <span class="float-right"><i class="fa fa-shopping-cart"></i></span>
+                </h5>
+                <div class="progress my-3" style="height:3px;">
+                  <div class="progress-bar" style="width:55%"></div>
+                </div>
+                <p class="mb-0 text-white small-font">Total orders <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6 col-xl-3 border-light">
+              <div class="card-body">
+                <h5 class="text-white mb-0">
+                  <%= product_count %> <span class="float-right"><i class="fa fa-book"></i></span>
+                </h5>
+                <div class="progress my-3" style="height:3px;">
+                  <div class="progress-bar" style="width:55%"></div>
+                </div>
+                <p class="mb-0 text-white small-font">Total products <i class="zmdi zmdi-long-arrow-up"></i></span></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- ------------------------------------------------------------------------------------------ -->
+
+
+      <!--------------------------------------  -->
+      <div class="row">
+        <div class="col-12 col-lg-8 col-xl-8">
+          <div class="card">
+            <div class="card-header">Monthly Report
+              <div class="card-action">
+                <div class="dropdown">
+                  <a href="javascript:void();" class="dropdown-toggle dropdown-toggle-nocaret" data-toggle="dropdown">
+                    <i class="icon-options"></i>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="javascript:void();">Action</a>
+                    <a class="dropdown-item" href="javascript:void();">Another action</a>
+                    <a class="dropdown-item" href="javascript:void();">Something else here</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="javascript:void();">Separated link</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <ul class="list-inline">
+                <li class="list-inline-item"><i class="fa fa-circle mr-2 text-white"></i>Revenue</li>
+                <li class="list-inline-item"></li>
+              </ul>
+              <div class="chart-container-1">
+                <canvas id="chart1"></canvas>
+              </div>
+            </div>
+
+            <input type="hidden" id="input1" value="<%=month[0]%>">
+            <input type="hidden" id="input2" value="<%=month[1]%>">
+            <input type="hidden" id="input3" value="<%=month[2]%>">
+            <input type="hidden" id="input4" value="<%=month[3]%>">
+            <input type="hidden" id="input5" value="<%=month[4]%>">
+            <input type="hidden" id="input6" value="<%=month[5]%>">
+            <input type="hidden" id="input7" value="<%=month[6]%>">
+            <input type="hidden" id="input8" value="<%=month[7]%>">
+            <input type="hidden" id="input9" value="<%=month[8]%>">
+            <input type="hidden" id="input10" value="<%=month[9]%>">
+            <input type="hidden" id="input11" value="<%=month[10]%>">
+            <input type="hidden" id="input12" value="<%=month[11]%>">
+
+            <div class="row m-0 row-group text-center border-top border-light-3">
+              <div class="col-12 col-lg-4">
+                <div class="p-3">
+                  <h5 class="mb-0">45.87M</h5>
+                  <small class="mb-0">Overall Visitor <span> <i class="fa fa-arrow-up"></i> 2.43%</span></small>
+                </div>
+              </div>
+              <div class="col-12 col-lg-4">
+                <div class="p-3">
+                  <h5 class="mb-0">15:48</h5>
+                  <small class="mb-0">Visitor Duration <span> <i class="fa fa-arrow-up"></i> 12.65%</span></small>
+                </div>
+              </div>
+              <div class="col-12 col-lg-4">
+                <div class="p-3">
+                  <h5 class="mb-0">245.65</h5>
+                  <small class="mb-0">Pages/Visit <span> <i class="fa fa-arrow-up"></i> 5.62%</span></small>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- ------------------------------------------------------------------------------------------- -->
+
+        <!-- -------------------------------count of COD ONLINE WALLET- --------------------------------------------------- -->
+        <div class="col-12 col-lg-4 col-xl-4">
+          <div class="card">
+            <div class="card-header">Payment Methods
+              <div class="card-action">
+                <div class="dropdown">
+                  <a href="javascript:void();" class="dropdown-toggle dropdown-toggle-nocaret" data-toggle="dropdown">
+                    <i class="icon-options"></i>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="javascript:void();">Action</a>
+                    <a class="dropdown-item" href="javascript:void();">Another action</a>
+                    <a class="dropdown-item" href="javascript:void();">Something else here</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="javascript:void();">Separated link</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="card-body">
+              <div class="chart-container-2">
+                <canvas id="chart2"></canvas>
+              </div>
+            </div>
+
+
+            <% payment.forEach((pay)=> { %>
+              <% if (pay._id=='COD' ) { %>
+                <input type="hidden" value="<%= pay.totalPayment %>" id="COD">
+                <% } else if (pay._id=='online' ) { %>
+                  <input type="hidden" value="<%= pay.totalPayment %>" id="online">
+                  <% } else { %>
+                    <input type="hidden" value="<%= pay.totalPayment %>" id="Wallet">
+                    <% } %>
+                      <% }) %>
+
+
+
+                        <div class="table-responsive">
+                          <table class="table align-items-center">
+                            <tbody>
+                              <tr>
+                                <% payment.forEach((pay)=> { %>
+                                  <% if (pay._id=='COD' ) { %>
+                                    <td><i class="fa fa-circle text-white mr-2"></i>COD</td>
+                                    <td>
+                                      <%= pay.totalPayment %>
+                                    </td>
+                              </tr>
+                              <tr>
+                                <% } else if (pay._id=='online' ) { %>
+                                  <td><i class="fa fa-circle text-light-1 mr-2"></i>Online</td>
+                                  <td>
+                                    <%= pay.totalPayment %>
+                                  </td>
+                              </tr>
+                              <tr>
+                                <% } else { %>
+                                  <td><i class="fa fa-circle text-light-2 mr-2"></i>Wallet Only</td>
+                                  <td>
+                                    <%= pay.totalPayment %>
+                                  </td>
+                                  <% } %>
+                                    <% }) %>
+                              </tr>
+
+                              <tr>
+                                <td><i class="fa fa-check text-light-2 mr-2"></i>When only wallet is utilised</td>
+                                <td></td>
+
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+          </div>
+        </div>
+      </div><!--End Row-->
+      <!-- ------------------------------------------------------------------------------------------- -->
+
+      <!--End Dashboard Content-->
+
+      <!--start overlay-->
+      <div class="overlay toggle-menu"></div>
+      <!--end overlay-->
+
+    </div>
+    <!-- End container-fluid-->
+
+    <script>
+
+      $(function () {
+        "use strict";
+
+        // chart 2
+        const coddata = parseInt(document.getElementById('COD').value);
+        const onlinedata = parseInt(document.getElementById('online').value);
+        const walletdata = parseInt(document.getElementById('Wallet').value);
+
+        var ctx = document.getElementById("chart2").getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ["COD", "Online", "Wallet Only"],
+            datasets: [{
+              backgroundColor: [
+                "#ffffff",
+                "rgba(255, 255, 255, 0.70)",
+                "rgba(255, 255, 255, 0.50)"
+              ],
+              data: [coddata, onlinedata, walletdata],
+              borderWidth: [0, 0, 0]
+            }]
+          },
+          options: {
+            maintainAspectRatio: false,
+            legend: {
+              position: "bottom",
+              display: false,
+              labels: {
+                fontColor: '#ddd',
+                boxWidth: 15
+              }
+            }
+            ,
+            tooltips: {
+              displayColors: false
+            }
+          }
+        });
+
+
+        // chart 1
+        const input1 = Number(document.getElementById('input1').value)
+        const input2 = Number(document.getElementById('input2').value)
+        const input3 = Number(document.getElementById('input3').value)
+        const input4 = Number(document.getElementById('input4').value)
+        const input5 = Number(document.getElementById('input5').value)
+        const input6 = Number(document.getElementById('input6').value)
+        const input7 = Number(document.getElementById('input7').value)
+        const input8 = Number(document.getElementById('input8').value)
+        const input9 = Number(document.getElementById('input9').value)
+        const input10 = Number(document.getElementById('input10').value)
+        const input11 = Number(document.getElementById('input11').value)
+        const input12 = Number(document.getElementById('input12').value)
+
+        var ctx = document.getElementById('chart1').getContext('2d');
+
+        var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: [{
+              label: 'Sales',
+              data: [input1,input2,input3,input4,input5,input6,input7,input8,input9,input10,input11,input12] ,
+              backgroundColor: '#fff',
+              borderColor: "transparent",
+              pointRadius: "0",
+              borderWidth: 3
+            }]
+          },
+          options: {
+            maintainAspectRatio: false,
+            legend: {
+              display: false,
+              labels: {
+                fontColor: '#ddd',
+                boxWidth: 40
+              }
+            },
+            tooltips: {
+              displayColors: false
+            },
+            scales: {
+              xAxes: [{
+                ticks: {
+                  beginAtZero: true,
+                  fontColor: '#ddd'
+                },
+                gridLines: {
+                  display: true,
+                  color: "rgba(221, 221, 221, 0.08)"
+                },
+              }],
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true,
+                  fontColor: '#ddd'
+                },
+                gridLines: {
+                  display: true,
+                  color: "rgba(221, 221, 221, 0.08)"
+                },
+              }]
+            }
+
+          }
+        });
+
+      });
+    </script>
+
+    <%- include('../partials/admin/footer.ejs') %>

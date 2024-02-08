@@ -1,0 +1,63 @@
+<%- include('../partials/users/header.ejs') %>
+
+
+   <!-- Breadcrumb Section Begin -->
+   <section class="hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                
+            </div>
+            <div class="col-lg-12">
+                <div class="hero__search">
+                    <div  >
+                            <div class="hero__search__categories">
+                        
+                            </div>
+                            
+                        
+                    </div>
+                </div>
+                <style>
+                .center-text {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    text-align: center;
+                    color: #f80c0c; /* Set the text color to match your design */
+                    /* Add any additional styling you need for the centered text */
+                }
+                
+            </style>
+                
+                <div class="hero__item set-bg" 
+                data-setbg="https://t3.ftcdn.net/jpg/01/36/54/48/360_F_136544867_7Riu4tYCyRrk3Za4uOfdJugNwC7Qjo5h.jpg">
+                    <div class="hero__text">
+                        <div class="center-text">
+                            <h2 style="font-size: 30px; white-space: nowrap; color: #fff;">WISHLIST</h2>
+                            <div class="breadcrumb__option">
+                                <a href="/" style="color: #fff;">Home</a>
+                                <span style="color: #fff;">Wishlist</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>      
+</section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shoping Cart Section Begin -->
+    <section class="shoping-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Your WishList is empty</h1>
+                    <button style="background-color: aliceblue;" class="btn btn-secondary"><a href="/shop">CONTINUE PURCHASE</a></button>
+                </div>
+            
+            </div>
+        </div>
+    </section>
+    <!-- Shoping Cart Section End -->
+
+    <%- include('../partials/users/footer.ejs') %>

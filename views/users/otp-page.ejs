@@ -1,0 +1,117 @@
+<%- include('../partials/users/loginheader.ejs') %>
+
+
+
+	<!--================Login Box Area =================-->
+	<section class="login_box_area section-margin">
+		<div class="container" style="margin-left: 30%;">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="login_form_inner register_form_inner">
+						<h3>
+                            Enter OTP</h3><br>
+						<form class="row login_form" action="" method="post" id="register_form">
+							
+							<div class="col-md-12 form-group">
+								<input type="text" class="form-control" id="otp" name="otp"
+									placeholder="Enter OTP" style="color: black;" onfocus="this.placeholder = ''"
+									onblur="this.placeholder = 'Enter OTP'">
+							</div>
+							
+							<div class="col-md-12 form-group">
+								<button type="submit" value="submit" id="btn-submit"
+									class="button button-register w-100">submit</button>
+                            </div>
+							<p style="color:rgb(8, 8, 8);" id="countdown-timer">OTP will expire in <span id="countdown">30</span> seconds.</p>
+						</form>
+						<% if(typeof message !=='undefined' ){ %>
+							<h4>
+							  <%= message %>
+							</h4>
+							<% } %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--================End Login Box Area =================-->
+
+	<h1></h1>
+	<h1></h1>
+	<h1></h1>
+	<div></div>
+	<div>.</div>
+	<!-- <script>
+		function startTimer(duration, display) {
+		  var timer = duration, minutes, seconds;
+		  setInterval(function () {
+			  minutes = parseInt(timer / 60, 10)
+			  seconds = parseInt(timer % 60, 10);
+	  
+			  minutes = minutes < 10 ? "0" + minutes : minutes;
+			  seconds = seconds < 10 ? "0" + seconds : seconds;
+	  
+			  display.textContent = minutes + ":" + seconds;
+	  
+			  if (--timer < 0) {
+				  timer = duration;
+			  }
+		  }, 1000);
+	  }
+	  
+	  var countdown = document.getElementById("countdown");
+	  var countdownTimer = document.getElementById("countdown-timer");
+	  
+	  startTimer(30, countdown);
+	  // Update timer element and display message when OTP expires
+	  function countdownExpired() {
+		countdownTimer.innerHTML = 'OTP has expired. Resend the OTP <a href="/resend-otp">here</a>.';
+	  
+	  }
+	  
+	  setTimeout(countdownExpired, 30000);
+	  </script> -->
+
+
+	  <script>
+		function startTimer(duration, display) {
+			var timer = duration, minutes, seconds;
+			var button = document.getElementById("btn-submit"); // Replace "yourFormId" with the actual ID of your form
+			var otp = document.getElementById('otp')
+
+
+			var intervalId = setInterval(function () {
+				minutes = parseInt(timer / 60, 10);
+				seconds = parseInt(timer % 60, 10);
+	
+				minutes = minutes < 10 ? "0" + minutes : minutes;
+				seconds = seconds < 10 ? "0" + seconds : seconds;
+	
+				display.textContent = minutes + ":" + seconds;
+	
+				if (--timer <= 0) {
+					timer = duration;
+					clearInterval(intervalId); // Stop the timer when it reaches 0
+					countdownExpired();
+					button.disabled = true;
+                    otp.disabled = true;
+				}
+			}, 1000);
+		}
+	
+		var countdown = document.getElementById("countdown");
+		var countdownTimer = document.getElementById("countdown-timer");
+	
+		startTimer(30, countdown);
+	
+		function countdownExpired() {
+			countdownTimer.innerHTML = 'OTP has expired. Resend the OTP <a href="/resend-otp">here</a>.';
+		}
+	
+		
+	</script>
+	
+	
+	</body>
+	
+	</html>

@@ -1,0 +1,86 @@
+<style>
+    /* Style for the table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #e4e8eb;
+        color: black;
+    }
+
+    /* Style for alternating row colors */
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    /* Style for the card */
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    /* Style for the card header */
+    .card-header {
+        background-color: #c4cace;
+        color: black;
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+</style>
+<br>
+<div class="head-img d-flex align-items-center justify-content-center">
+    <h1 class=" text-white " style="text-shadow: 2px 1px 2px rgb(0, 0, 0);">Wallet</h1>
+</div>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Transactions</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <!-- <th>Transaction ID</th>
+                                <th>User ID</th> -->
+                                <th class="text-center">Type</th>
+                                <th class="text-center">Amount</th>
+                                <th class="text-center">Description</th>
+                                <th class="text-center">Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% wallets.forEach(function(wallet) { %>
+                                <!-- <td><%= wallet._id %></td>
+                                <td><%= wallet.userId %></td> -->
+                                <tr>
+                                    <td class="text-center"><%= wallet.transactionType %></td>
+                                    <td class="text-center"><%= wallet.amount %></td>
+                                    <td class="text-center"><%= wallet.description %></td>
+                                    <td class="text-center"><%= wallet.timestamp %></td>
+ 
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+ 

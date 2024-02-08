@@ -1,0 +1,90 @@
+<%- include('../partials/admin/header.ejs') %>
+
+<!-- Add these links to your head section -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+<style>
+  #productTable tbody tr:hover {
+    background-color: #f97a7a; 
+  }
+</style>
+
+
+  <div class="clearfix"></div>
+
+  
+  <div class="content-wrapper">
+    <div class="container-fluid">
+        
+        <div style="margin-top: 20px;">
+            <button type="button" class="btn btn-outline-info"><a href="/admin/category/add">ADD CATEGORY</a></button>
+        </div>
+        
+      <div class="row" >
+        <div class="col-lg-12">
+          <div class="card" style="margin-top: 20px;">
+            <div class="card-body">
+              <h5 class="card-title">Category Details</h5>
+              <div class="table-responsive">              
+                <table style="color: black; background-color: darkturquoise;" id="productTable"  >              
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Action</th>
+                      <th scope="col"></th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (message.length> 0) { %>
+                      <% for (let i=message.length-1; i >=0 ; i--) { %>
+                        <tr>
+                          <th scope="row">
+                            <%= message.length-i %>
+                          </th>
+                          <td>
+                            <%= message[i].name %>
+                          </td>
+                          <% if (message[i].is_block==0) { %>
+                            <td>Active</td>
+                            <td><a style="color:rgb(8, 8, 8);" href="/admin/category/block?id=<%=message[i]._id%>">BLOCK</a></td>
+                            <% } else { %>
+                              <td>Blocked</td>
+                              <td><a style="color: rgb(241, 5, 5);" href="/admin/category/unblock?id=<%=message[i]._id%>">UNBLOCK</a></td>
+                              <% } %>
+                              <td>
+                                
+                                  <button type="button" class="btn btn-outline-dark">
+                                    <a href="/admin/category/edit?id=<%=message[i]._id%>" style="color: darkgreen;">Edit</a></button>
+                                      
+                                      
+                              </td>
+
+                        </tr>
+                        <% } %>
+                          <% } else { %>
+                            <tr>
+                              <td colspan="3">Categories not found</td>
+                            </tr>
+                            <% } %>
+
+                           
+                  </tbody>
+                </table>
+                <script>
+                  $(document).ready(function() {
+                    $('#productTable').DataTable({
+                      "bInfo": false  // Disable the display of information about the table
+                    });
+                  });
+                </script>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!--End Row-->

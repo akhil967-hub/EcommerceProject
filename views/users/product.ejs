@@ -1,0 +1,175 @@
+<%- include('../partials/users/header.ejs') %>
+
+    
+    <!-- Product Details Section Begin -->
+    <section class="product-details spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="product__details__pic">
+                        <div class="product__details__pic__item image-zoom-container">
+                            <img class="product__details__pic__item--large image-zoom"
+                                src="/productimages/<%=product.image[0]%>" alt="Product Image">
+                        </div>
+                        <div class="product__details__pic__slider owl-carousel">
+                            <img data-imgbigurl="/productimages/<%=product.image[1]%>"
+                                src="/productimages/<%=product.image[1]%>" alt="">
+                            <img data-imgbigurl="/productimages/<%=product.image[2]%>"
+                                src="/productimages/<%=product.image[2]%>" alt="">
+                            <img data-imgbigurl="/productimages/<%=product.image[0]%>"
+                                src="/productimages/<%=product.image[0]%>" alt="">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="product__details__text">
+                        <h3>
+                            <%=product.name%>
+                        </h3>
+                        <div class="product__details__rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-half-o"></i>
+                            <span>(20 reviews)</span>
+                        </div>
+                        <div class="product__details__price">
+                            ₹ <%=product.price%>
+                        </div>
+                        <p><%=product.description%> </p>
+
+                        <a href='#' onclick="show('<%-product._id%>')" class="primary-btn">ADD TO CART</a>
+                        <a onclick="addtoWishlist('<%-product._id%>')" class="heart-icon"><span
+                                class="icon_heart_alt"></span></a>
+                        <% if (product.status==='Out Of Stock' ) { %>
+                            <p style="color: red;">OUT OF STOCK</p>
+                            <% } %>
+
+
+
+                                <ul>
+                                   
+                                    <li><b>Shipping</b> <span>01 Day Shipping. <samp>Free Pickup Today</samp></span>
+                                    </li>
+                                    <li><b>Weight</b> <span> 6 gms</span></li>
+                                        <div class="share">
+                                            <a href="#"><i class="fa fa-facebook"></i></a>
+                                            <a href="#"><i class="fa fa-twitter"></i></a>
+                                            <a href="#"><i class="fa fa-instagram"></i></a>
+                                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                                        </div>
+                                    </li>
+                                </ul>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section> -->
+    <!-- Related Product Section End -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <script>
+        function show(id) {
+            $.ajax({
+                url: "/addToCart",
+                method: "post",
+                data: {
+                    id: id
+                },
+                success: (response) => {
+                    if (response.success) {
+                        swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Product added to cart',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                },
+                error: (xhr) => {
+                    if (xhr.status === 401) {
+                        window.location.href = '/login';
+                    } else if (xhr.status === 400) {
+                        const response = xhr.responseJSON;
+                        swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                }
+            });
+        }
+        function addtoWishlist(id) {
+            console.log(id)
+            $.ajax({
+                url: '/addtowhishlist',
+                method: 'post',
+                data: {
+                    id: id
+                },
+                success: (response) => {
+                    if (response.status) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'product added to wishlist',
+                            showConfirmButton: false,
+                            timer: 1000,
+
+                        })
+
+                    } else if (response.productExit) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Product already added to wishlist',
+                            showConfirmButton: false,
+                            timer: 1000
+
+                        })
+
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Plz SignIn!',
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+
+                    }
+                }
+
+            })
+        }
+
+    </script>
+
+    <style>
+        .image-zoom-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .image-zoom {
+            display: block;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+
+        .image-zoom:hover {
+            transform: scale(1.3);
+            z-index: 1;
+        }
+    </style>
+
+
+    <%- include('../partials/users/footer.ejs') %>

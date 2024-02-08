@@ -1,0 +1,262 @@
+<%- include('../partials/users/header.ejs') %>
+
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    
+                </div>
+                <div class="col-lg-12">
+                    <div class="hero__search">
+                        <div  >
+                                <div class="hero__search__categories">
+                            
+                                </div>
+                                
+                            
+                        </div>
+                    </div>
+                    <style>
+                    .center-text {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        text-align: center;
+                        color: #f80c0c; /* Set the text color to match your design */
+                        /* Add any additional styling you need for the centered text */
+                    }
+                    
+                </style>
+                    
+                    <div class="hero__item set-bg" 
+                    data-setbg="https://t3.ftcdn.net/jpg/01/36/54/48/360_F_136544867_7Riu4tYCyRrk3Za4uOfdJugNwC7Qjo5h.jpg">
+                        <div class="hero__text">
+                            <div class="center-text">
+                                <h2 style="font-size: 30px; white-space: nowrap; color: #fff;">Shopping Cart</h2>
+                                <div class="breadcrumb__option">
+                                    <a href="/" style="color: #fff;">Home</a>
+                                    <span style="color: #fff;">Shopping Cart</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>      
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shoping Cart Section Begin -->
+    <section class="shoping-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="shoping__product"> Products</th>
+                                    <th>Rate</th>
+                                    <th>Units</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(let index=products.length-1; index>=0; index--) { %>
+                                    <% let value=products[index]; %>
+                                        <% let stock=value.productId.stock; %>
+                                            <% let quantity=value.count; %>
+                                                <% let available=stock>= quantity; %>
+                                                    <tr>
+                                                        <td class="shoping__cart__item">
+                                                            <img src="../productimages/<%=value.productId.image[0]%>"
+                                                                width="80px" height="80px" alt="">
+                                                            <h5>
+                                                                <%=value.productId.name%>
+                                                            </h5>
+                                                        </td>
+                                                            <td class="shoping__cart__price"
+                                                                id="<%=value.productId.name%>">
+                                                                <%=value.productId.price%>
+                                                            </td>
+
+                                                            <td class="shoping__cart__quantity">
+                                                                <div class="quantity">
+                                                                    <div class="pro-qty">
+                                                                        <a onclick="changeQuantity(this, '<%=products._id%>', '<%=value.productId._id%>', -1, 
+                                                                        '<%=index%>', '<%=value.productId.name%>')"
+                                                                        <% if (value.count === 1) { %>disabled<% } %>>
+                                                                            
+                                                                             <span class="dec qtybtn change-qty">-</span>
+                                                                         </a>
+                                                                        <span>&nbsp;&nbsp; <span
+                                                                                id="<%=value.productId._id%>">
+                                                                                <%=value.count%>
+                                                                            </span> &nbsp;&nbsp; </span>
+                                                                        <a
+                                                                            onclick="changeQuantity(this, '<%=products._id%>','<%=value.productId._id%>',1,'<%=index%>',
+                                                                            '<%=value.productId.name%>')">
+                                                                            <span class="inc qtybtn change-qty">+</span>
+                                                                        </a>
+                                                                        <input type="hidden" class="pro-id"
+                                                                            value="<%=value.productId._id%>">
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="shoping__cart__total" id="<%=index%>">
+                                                                
+                                                            <% if (available) { %>
+                                                                <%=value.productId.price*value.count%>
+
+
+                                                            <% } else { %>
+                                                                <h5>Out of stock</h5>
+                                                                
+                                                            <% } %>
+
+                                                            </td>
+                                                            <td class="shoping__cart__item__close">
+                                                                <a href="/removeproduct?id=<%=value.productId._id%>"><span
+                                                                        class="icon_close"
+                                                                        style="color: red;"></span></a>
+                                                            </td>
+
+                                                            
+
+                                                            
+                                                    </tr>
+                                                    <% } %>
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__btns">
+                        <a href="#" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
+                        <!-- <a href="#" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span>
+                            Upadate Cart</a> -->
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="shoping__continue">
+                        <div class="shoping__discount">
+                            <h5>Discount Codes</h5>
+                            <form action="#">
+                                <input type="text" placeholder="Enter your coupon code">
+                                <button type="submit" class="site-btn">APPLY COUPON</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="shoping__checkout">
+                        <h5>Cart Total</h5>
+                        <ul>
+                            <li>Subtotal <span id="total1">
+                                    <%=Total%>
+                                </span></li>
+                            <li>Total <span id="total">
+                                    <%=Total%>
+                                </span></li>
+                        </ul>
+                        <a href="/checkout" class="primary-btn">PROCEED TO CHECKOUT</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <script>
+        function changeQuantity(element,cartId, proId, count, index, price) {
+            
+            let quantity = parseInt(document.getElementById(proId).innerHTML)
+            let Index = parseInt(index)
+            let count1 = parseInt(count)
+            let Price = document.getElementById(price).innerHTML
+            if (quantity === 1 && count1 === -1) {  
+                element.setAttribute("disabled", "disabled");  
+                element.style.cursor = "not-allowed";
+                return;
+            }
+
+
+             element.removeAttribute("disabled");
+             element.style.cursor = "auto";
+
+                 $.ajax({
+                    url: '/cartqntyincrese',
+                        data: {
+                        cart: cartId,
+                        product: proId,
+                        count: count1,
+                        quantity: quantity,
+                    },
+                    method: 'patch',
+                     success: (response) => {
+                        if (response.remove) {
+                        detelecartitem(proId)
+                        } else {
+                        document.getElementById(proId).innerHTML = quantity + count;
+                        document.getElementById("total1").innerHTML = response.Total
+                        document.getElementById("total").innerHTML = response.Total
+                        document.getElementById(Index).innerHTML = Price * (quantity + count1)  
+                    }
+                },
+                error: (xhr) => {
+                    if (xhr.status === 400) {
+                        const response = xhr.responseJSON;
+                        swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                }
+            })
+        }
+        
+    </script>
+
+    <script>
+
+        function detelecartitem(proId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/removeproduct",
+                        data: {
+
+                            product: proId,
+                        },
+                        method: "delete",
+                        success: (response) => {
+                            if ((response.remove = true)) {
+                                location.reload();
+                            }
+                        },
+                    });
+                }
+            });
+        }
+    </script>
+    <!-- Shoping Cart Section End -->
+
+    <%- include('../partials/users/footer.ejs') %>

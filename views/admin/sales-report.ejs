@@ -1,0 +1,104 @@
+<%- include('../partials/admin/header.ejs') %>
+
+  <div class="clearfix"></div>
+
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+
+            <form action=""  style="margin-top: 10px;">
+                <label for="">From</label>
+                <input type="date" name="from"style="background-color: rgb(11,82,136); color: silver;">
+                <label for="">To</label>
+                <input type="date" name="to"  style="background-color: rgb(11,82,136); color: silver;">
+                <input type="submit" value="Filter" style="background-color: rgb(11,82,136); color: silver;">
+            </form>
+
+            <div class="sales-report-form">
+              <form action="/admin/daily-report" method="post">
+                <label for="daily">Daily sales</label>
+                <input type="date" name="daily" id="daily">
+                <button class="sales-report-button" type="submit">View</button>
+              </form>
+            </div>
+            <br>
+  <div class="sales-report-form">
+    <form action="/admin/monthly-report" method="post">
+      <label for="monthly">Monthly sales</label>
+      <input type="month" name="month" id="month">
+      <button class="sales-report-button" type="submit">View</button>
+    </form>
+  </div>
+  <br>
+  <div class="sales-report-form">
+    <form action="/admin/yearly-report" method="post">
+      <label for="yearly">Yearly sales</label>
+      <input type="number" name="yearly" id="yearly" min="2022" max="2024" value="2023">
+      <button class="sales-report-button" type="submit">View</button>
+    </form>
+  </div>
+
+
+
+            <form action="/admin/salesreport/download" method="get">
+              <button style="background-color: rgb(11,82,136); color: silver; margin-top: 8px;">Download</button></a> 
+
+          </form>
+
+            
+
+          <div class="card" style="margin-top: 25px;">
+            
+            <div class="card-body">
+              <h5 class="card-title">Sales Report</h5>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Order Date</th>
+                      <th scope="col">Method</th>
+                      <th scope="col">Amount</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (message.length> 0) { %>
+                      <% for (let i=message.length-1; i >=0; i--) { %>
+                        <tr>
+                          <th scope="row">
+                            <%= message.length-i %>
+                          </th>
+                          <td>
+                            <%= message[i].user %>
+                          </td>
+                          <td>
+
+                            <%= message[i].date.toISOString().substring(0,10) %>
+                          </td>
+                          <td>
+                            <%= message[i].paymentMethod %>
+                          </td>
+                          <td>
+                            <%= message[i].totalAmount %>
+                          </td>
+                          <td>
+                            <%= message[i].status %>
+                          </td>
+                        </tr>
+                        <% } %>
+                          <% } else { %>
+                            <tr>
+                              <td colspan="3">Orders not found</td>
+                            </tr>
+                            <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!--End Row-->
