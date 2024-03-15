@@ -1,76 +1,187 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('../partials/admin/header.ejs') %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Category</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f5ff; /* Light blue background */
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
 
-        h1 {
-            color: #0077cc; /* Blue text color */
-            text-align: center;
-        }
+    <!DOCTYPE html>
+    <html lang="en">
 
-        form {
-            background-color: #f0f5ff; /* Light blue background */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit Category</title>
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #f0f5ff;
+                /* Light blue background */
+                margin: 0;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                margin-left: 400px;
+            }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #0077cc; /* Blue label color */
-            font-weight: bold;
-        }
+            h1 {
+                color: #1f00cc;
+                /* Blue text color */
+                text-align: center;
+                margin-right: 400px;
+            }
 
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-            border: 1px solid #0077cc; /* Blue border */
-            border-radius: 4px;
-        }
+            form {
+                background-color: #f0f5ff;
+                /* Light blue background */
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                max-width: 400px;
+                width: 100%;
+            }
 
-        button {
-            background-color: #0077cc; /* Blue button background */
-            color: #ffffff; /* White button text color */
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
-</head>
+            label {
+                display: block;
+                margin-bottom: 8px;
+                color: #0077cc;
+                /* Blue label color */
+                font-weight: bold;
+            }
 
-<body>
+            input {
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 16px;
+                box-sizing: border-box;
+                border: 1px solid #0077cc;
+                /* Blue border */
+                border-radius: 4px;
+            }
 
-<h1>Edit Category</h1>
+            button {
+                background-color: #0077cc;
+                /* Blue button background */
+                color: #ffffff;
+                /* White button text color */
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+        </style>
+    </head>
 
-<form action="/admin/post-edit-category" method="POST">
-    <input type="hidden" name="id" value="<%= categoryData._id %>">
-    <label for="name">Category Name:</label>
-    <input type="text" id="name" name="name" value="<%= categoryData.name %>" required>
+    <body>
 
-    <!-- Add other fields for category editing -->
+        <h1>Edit Category</h1>
 
-    <button type="submit">Update Category</button>
-</form>
 
-</body>
-</html>
+
+        <form action="/admin/post-edit-category" method="POST" onsubmit="return validateForm()">
+            <input type="hidden" name="id" value="<%= categoryData._id %>">
+            <label for="name">Category Name:</label>
+            <input type="text" id="name" name="name" value="<%= categoryData.name %>" required>
+
+            <!-- Warning message spans -->
+            <span id="existingNameWarning" style="color: red; margin-top: 5px;"></span>
+            <span id="blankNameWarning" style="color: red; margin-top: 5px;"></span>
+            <span id="lengthNameWarning" style="color: red; margin-top: 5px;"></span>
+            <span id="specialCharWarning" style="color: red; margin-top: 5px;"></span>
+
+            <!-- Add other fields for category editing -->
+
+            <button type="submit">Update Category</button>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', async () => {
+                var existingCategoryNames = getExistingCategoryNames();
+                // alert(existingCategoryNames);
+                const categoryNameToCheck = abc; // Replace with the actual category name you want to check
+
+                if (existingCategoryNames.includes(categoryNameToCheck)) {
+                    alert(1)
+                    const existingNameWarning = document.getElementById('existingNameWarning'); // Replace with the actual ID of your warning element
+                    existingNameWarning.innerHTML = "Category name already exists";
+                    // Additional logic if the category name exists, e.g., prevent form submission
+                    // return false;
+                }
+
+
+            })
+            function validateForm() {
+                var categoryName = document.getElementById("name").value;
+                // alert(categoryName)
+                // console.log(categoryName,"jhhgf");
+                var existingNameWarning = document.getElementById("existingNameWarning");
+                var blankNameWarning = document.getElementById("blankNameWarning");
+                var lengthNameWarning = document.getElementById("lengthNameWarning");
+                var specialCharWarning = document.getElementById("specialCharWarning");
+
+                // Clear previous warnings
+                existingNameWarning.innerHTML = "";
+                blankNameWarning.innerHTML = "";
+                lengthNameWarning.innerHTML = "";
+                specialCharWarning.innerHTML = "";
+
+                // Check if the name is blank or contains only whitespace
+                if (categoryName.trim() === "") {
+                    blankNameWarning.innerHTML = "Category name cannot be blank or contain only whitespaces";
+                    return false;
+                }
+
+                // Check if the name starts with whitespace
+                if (/^\s/.test(categoryName)) {
+                    blankNameWarning.innerHTML = "Category name should not start with whitespace";
+                    return false;
+                }
+
+                // Check if the name is at least 3 characters long
+                if (categoryName.length < 3) {
+                    lengthNameWarning.innerHTML = "Category name should be at least 3 characters long";
+                    return false;
+                }
+
+                // Check for special characters
+                if (!/^[a-zA-Z0-9\s]+$/.test(categoryName)) {
+                    specialCharWarning.innerHTML = "Category name should only contain letters, numbers, and spaces";
+                    return false;
+                }
+
+                // Fetch existing category names dynamically (replace this with your actual fetching mechanism)
+
+
+                // Check for existing category name
+                if (existingCategoryNames.includes(categoryName)) {
+                    existingNameWarning.innerHTML = "Category name already exists";
+                    return false;
+                }
+
+                // If all validations pass, submit the form
+                return true;
+            }
+
+            async function getExistingCategoryNames() {
+                try {
+                    const response = await fetch('/admin/api/category/edit'); // Replace '/api/categories' with your actual API endpoint
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch category names. Status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.map(category => category.name);
+
+
+                } catch (error) {
+                    console.error('Error fetching category names:', error.message);
+                    return []; // Return an empty array or handle the error as needed
+                }
+            }
+
+        </script>
+
+
+
+
+    </body>
+
+    </html>

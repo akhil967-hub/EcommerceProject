@@ -1,68 +1,15 @@
 <%- include('../partials/users/header.ejs') %>
 
-    <!-- Breadcrumb Section Begin -->
-    <section class="hero">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3">
-                    
-                </div>
-                <div class="col-lg-12">
-                    <div class="hero__search">
-                        <div  >
-                                <div class="hero__search__categories">
-                            
-                                </div>
-                                
-                            
-                        </div>
-                    </div>
-    <style>
-        .center-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #f80c0c; /* Set the text color to match your design */
-            /* Add any additional styling you need for the centered text */
-        }
-    </style>
-        
-        <div class="hero__item set-bg" 
-        data-setbg="https://i.pinimg.com/originals/b8/29/80/b829809e82bded62f266bf7eedadb01a.jpg">
-            <div class="hero__text">
-                <div class="center-text">
-                    <h2 style="font-size: 30px; white-space: nowrap; color: #fff;">Checkout</h2>
-                    <div class="breadcrumb__option">
-                        <a href="/" style="color: #fff;">Home</a>
-                        <span style="color: #fff;">Checkout</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Breadcrumb Section End -->
-
-    <!-- Checkout Section Begin -->
     <section class="checkout spad">
         <div class="container">
-            <!-- <div class="row">
-                <div class="col-lg-12">
-                    <h6><span class="icon_tag_alt"></span> Have a coupon? <a href="#">Click here</a> to enter your code
-                    </h6>
-                </div>
-            </div> -->
             <div class="checkout__form">
                 <h4>Billing Details</h4>
-
                 <form action="" id="checkout">
                     <div class="row">
                         <div class="col-lg-8 col-md-6">
-
-                            <% if(addressdata!=undefined){%>
-                                <h4>Available adresses are</h4>
-                                <% for(let i=0; i < addressdata.address.length; i++) { %>
+                            <% if (addressdata !=undefined) { %>
+                                <h4>Available addresses are</h4>
+                                <% for (let i=0; i < addressdata.address.length; i++) { %>
                                     <div class="custom-control custom-checkbox">
                                         <input type="radio" class="custom-control-input" id="address-<%= i %>"
                                             name="address" type="radio" value="<%= addressdata.address[i].address %>"
@@ -75,77 +22,81 @@
                                                             Email: <%= addressdata.address[i].email %><br>
                                         </label>
                                     </div>
-                                    <% } } else {%>
-                                        <p>No Address found.. Add a new Address</p>
-                                        <%}%>
+                                    <% } %>
+                                        <% } else { %>
+                                            <p>No Address found. Add a new Address</p>
+                                            <% } %>
 
-                                            <a href="/add-address"><button type="button"
-                                                    class="btn btn-success rounded-pill m-2">Add another
-                                                    address</button></a>
-                                            <div class="shoping__continue">
-                                                <div class="shoping__discount">
-                                                    <h5>Discount Codes</h5>
-                                                    <form action="#">
-                                                        <input type="text" placeholder="Enter your coupon code"
-                                                            id="code">
-                                                        <button type="submit" onclick="applycoupon($('#code').val())"
-                                                            class="site-btn">APPLY COUPON</button>
-                                                    </form>
+                                                <a href="/add-address"><button type="button"
+                                                        class="btn btn-success rounded-pill m-2">Add another
+                                                        address</button></a>
+
+                                                <div class="shoping__continue">
+                                                    <div class="shoping__discount">
+                                                        <h5>Discount Codes</h5>
+                                                        <form action="#">
+                                                            <input type="text" placeholder="Enter your coupon code"
+                                                                id="code">
+                                                            <button type="submit"
+                                                                onclick="applycoupon($('#code').val())"
+                                                                class="site-btn">APPLY COUPON</button>
+                                                        </form>
+                                                    </div>
                                                 </div>
-                                            </div>
                         </div>
 
                         <div class="col-lg-4 col-md-6">
                             <div class="checkout__order">
                                 <h4>Your Order</h4>
-                                <div class="checkout__order__products"> <span>Total</span></div><br><br>
+                                <div class="checkout__order__products">
+                                    <span>Total</span>
+                                </div><br><br>
                                 <ul>
-                                    <% products.forEach((value,index)=>{%>
+                                    <% products.forEach((value, index)=> { %>
                                         <li>
-                                            <%=value.productId.name%><span>
-                                                    <%=value.productId.price*value.count%>
+                                            <%= value.productId.name %><span>
+                                                    ₹ <%= value.productId.price * value.count %>
                                                 </span>
                                         </li>
-                                        <%})%>
-
+                                        <% }) %>
                                 </ul>
-                                <div class="checkout__order__subtotal">Subtotal <span>
-                                        <%=Total%>
-                                    </span></div>
+                                <div class="checkout__order__subtotal"> Subtotal <span>
+                                        ₹ <%= Total %>
+                                    </span>
+                                </div>
 
-
-                                <% if(userData.wallet> Total) { %>
-
-                                    <div class="checkout__order__subtotal">Wallet <span>
+                                <% if (userData.wallet> Total) { %>
+                                    <div class="checkout__order__subtotal"> Wallet <span>
                                             <%= userData.wallet %>
-                                        </span></div>
-
+                                        </span>
+                                    </div>
                                     <div class="checkout__order__subtotal">Used from wallet <span id="total1">
-                                            <%= Total %>
-                                        </span></div>
+                                            ₹ <%= Total %>
+                                        </span>
+                                    </div>
                                     <div>
                                         <input type="hidden" name="payment" value="wallet">
                                     </div>
                                     <div>
                                         <input type="hidden" id="discount" value="0">
                                     </div>
-                                  
-
-
                                     <% } else { %>
-
                                         <div class="checkout__order__subtotal">Discount <span id="discount">
-                                           0
-                                        </span></div>
-
+                                                0
+                                            </span>
+                                        </div>
+                                        <button id="removeDiscountButton" onclick="removeDiscount()">Remove
+                                            Discount</button>
 
                                         <div class="checkout__order__subtotal">Wallet <span>
                                                 <%= userData.wallet %>
-                                            </span></div>
+                                            </span>
+                                        </div>
 
                                         <div class="checkout__order__total">Amount to be paid <span id="total1">
                                                 <%= Total - userData.wallet %>
-                                            </span></div>
+                                            </span>
+                                        </div>
 
                                         <div class="form-group">
                                             <div class="col-md-12">
@@ -160,15 +111,12 @@
                                         <div class="form-group">
                                             <div class="col-md-12">
                                                 <div class="radio">
-                                                    <label><input type="radio" name="payment" value="COD" required> Cash
-                                                        On
-                                                        Delivery</label>
+                                                    <label><input type="radio" name="payment" value="COD" required>
+                                                        Cash On Delivery</label>
                                                 </div>
                                             </div>
                                         </div>
-
                                         <% } %>
-
                                             <button type="submit" class="site-btn">PLACE ORDER</button>
                             </div>
                         </div>
@@ -176,25 +124,18 @@
                 </form>
             </div>
         </div>
-
     </section>
 
-
-    <!-- Checkout Section End -->
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-
     <script>
-
         $("#checkout").submit((e) => {
             const amount = document.getElementById("total1").innerHTML;
             const discountAmount = document.getElementById("discount").innerHTML;
             let address = $("input[name=address]:checked").val();
             let payment = $("input[name=payment]:checked").val();
-            
+
             e.preventDefault();
             $.ajax({
                 url: "/checkout",
@@ -203,7 +144,7 @@
                     amount: amount,
                     address: address,
                     payment: payment,
-                    discountAmount:discountAmount
+                    discountAmount: discountAmount
                 },
                 success: (response) => {
                     if (response.success == true) {
@@ -212,67 +153,148 @@
                         razorpayPayment(response.order);
                     }
                 }
-            })
-        })
+            });
+        });
 
         function razorpayPayment(order) {
-
             var options = {
-            "key": "rzp_test_Dx8mM70pXTIhYw", // Enter the 'ID' generated from the Dashboard
-            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-            "currency": "INR",
-            "name": "OPAL JWELS", //your business name
-            "description": "Test Transaction",
-            "image": "https://example.com/your_logo",
-            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-            "handler": function (response) {
+                "key": "rzp_test_Dx8mM70pXTIhYw",
+                "amount": order.amount,
+                "currency": "INR",
+                "name": "OPAL JWELS",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": order.id,
+                "handler": function (response) {
+                    verifyPayment(response, order);
+                },
+                "prefill": {
+                    "name": "AKHIL A",
+                    "email": "akhilaroli@gmail.com",
+                    "contact": "9745513967"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
 
-        // alert(response.razorpay_payment_id);
-        // alert(response.razorpay_order_id);
-        // alert(response.razorpay_signature)
-        verifyPayment(response, order);
-    },
-            "prefill": {
-            "name": "AKHIL A", //your customer's name
-            "email": "akhilaroli@gmail.com",
-            "contact": "9745513967"
-    },
-            "notes": {
-        "address": "Razorpay Corporate Office"
-    },
-    "theme": {
-        "color": "#3399cc"
-    }
-};
-
-
-        var rzp1 = new Razorpay(options);
-        rzp1.open();
-}
-    function verifyPayment(payment, order) {
-const amount = document.getElementById("total1").innerHTML;
-// const amount2 = document.getElementById("gt2").innerHTML;
-$.ajax({
-    url: "/verifyPayment",
-    method: "post",
-    data: {
-        payment,
-        amount,
-        order
-    },
-    success: (response) => {
-        if (response.success) {
-            location.href = '/order-place';
-
-        } else {
-            alert('payment failed');
-            location.href = '/';
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
         }
-    }
-})
-}
-    
-        
+
+        function verifyPayment(payment, order) {
+            const amount = document.getElementById("total1").innerHTML;
+            $.ajax({
+                url: "/verifyPayment",
+                method: "post",
+                data: {
+                    payment,
+                    amount,
+                    order
+                },
+                success: (response) => {
+                    if (response.success) {
+                        location.href = '/order-place';
+                    } else {
+                        alert('payment failed');
+                        location.href = '/';
+                    }
+                }
+            });
+        }
+
+        function applycoupon(code) {
+            const amount = document.getElementById('total1').innerHTML;
+            $.ajax({
+                url: "/applyCoupon",
+                data: {
+                    code: code,
+                    amount: amount
+                },
+                method: "post",
+                success: (response) => {
+                    if (response.user) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'This coupon has already been used by you!'
+                        });
+                    } else if (response.status) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'This coupon is not in use now!'
+                        });
+                    } else if (response.cartAmount) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'You can\'t use the coupon. Buy more.'
+                        });
+                    } else if (response.date) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Coupon expired!'
+                        });
+                    } else if (response.amountOkey) {
+                        document.getElementById('discount').innerHTML = response.discAmount;
+                        document.getElementById('total1').innerHTML = response.disTotal;
+                        console.log(response.discAmount, response.disTotal, "jj");
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Discount redeemed',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else if (response.invalid) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Invalid Coupon!'
+                        });
+                    }
+                }
+            })
+        }
+
+        function removeDiscount() {
+            const remove = document.getElementById('code').value
+            console.log(remove,'ll');
+            const discount = 0;
+            document.getElementById('discount').innerText = discount;
+            const walletAmount = parseInt('<%= userData.wallet %>');
+            const totalAmount = parseInt('<%= Total %>');
+            const newTotal = totalAmount - walletAmount - discount;
+            document.getElementById('total1').innerText = newTotal;
+            const code = remove; // Add the code of the removed coupon here
+
+            // Making AJAX call to remove the coupon
+            $.ajax({
+                url: "/remove-coupon",
+                method: "POST",
+                data: { code: code },
+                success: function (response) {
+                    if (response.success) {
+                        // Coupon removed successfully
+                       
+                    } else {
+                        // Coupon removal failed
+                        console.log(response.error);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+
+
     </script>
 
     <%- include('../partials/users/footer.ejs') %>

@@ -42,15 +42,16 @@
                             </div>
 
                             <div class="form-floating mb-3">
-                                <select name="category" style="background-color:rgb(58,133,169);" class="form-select" id="floatingSelect"
-                                    aria-label="Floating label select example" >
-                                    <% if(categoryData.length> 0) {
+                                <select name="category" style="background-color:rgb(58,133,169);" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                    <% if(categoryData.length > 0) {
                                         for(let i=0; i < categoryData.length; i++) { %>
-                                            <option value="<%= categoryData[i].name %>" style="background-color:rgb(58,133,169);">
+                                            <option value="<%= categoryData[i].name %>" style="background-color:rgb(58,133,169);" 
+                                                <%= categoryData[i].name === productData.category ? 'selected' : '' %>>
                                                 <%= categoryData[i].name %>
                                             </option>
                                         <% } } %>
                                 </select>
+                                
                                 <label for="floatingSelect">Select category</label>
                             </div>
 
@@ -64,7 +65,7 @@
                                 <div class="d-flex flex-coloum " style="justify-content: space-between; ">
                                     <%productData.image.forEach((value,index)=>{%>
                                         <div class="border border-dark border-2">
-                                            <img height="100px" src="/productimages/<%=productData.image[index]%>" alt="" width="100px">
+                                            <img height="100px" src="/uploads/<%=productData.image[index]%>" alt="" width="100px">
                                             
                                              <div style="padding-left: 1em;">
                                                 <button type="button" class="btn btn-danger btn-sm" 
@@ -212,7 +213,7 @@
 
                     <script>
                 function deletePhoto(position, id) {
-    fetch("/admin/delete_image", {
+                  fetch("/admin/delete_image", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -234,4 +235,6 @@
 }
 
             </script>
-            <%- include('../partials/admin/footer.ejs') %>
+
+            
+<%- include('../partials/admin/footer.ejs') %>

@@ -1,3 +1,7 @@
+<%- include('../partials/users/header.ejs') %>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,6 +30,9 @@
     <!-- Custom Style-->
     <link href="css/app-style.css" rel="stylesheet" />
 
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
 </head>
 
 <body class="bg-theme bg-theme1">
@@ -34,144 +41,87 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card" style="margin-top: 40px;">
-                    <div  style="background-color: rgba(0, 4, 12, 0.692)" class="card-body">
+                    <div style="background-color: rgba(4, 80, 99, 0.687);" class="card-body text-center">
                         <h5 class="card-title">Order Details</h5>
-                        <div  class="table-responsive">
-                            <table  class="table table-hover">
-                                <thead  >
+                        <div class="table-responsive">
+                            <table style="color:black" class="table table-hover">
+                                <thead>
                                     <tr>
-                                        <th scope="col">#</th>
+                                        <th scope="col">No.</th>
                                         <th scope="col">Product Name</th>
+                                        <th scope="col">Quantity</th>
                                         <th scope="col">Order Date</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Paid</th>
-                                        <th scope="col">Payment Method</th>
-                                        <th scope="col"></th>
-
+                                        <th scope="col">Details</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Action</th>
-                                        
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     <% if (message.length> 0) { %>
-                                        <% for (let i = message.length - 1; i >= 0; i--) { %>                       
+                                        <% message.forEach((order, index)=> { %>
                                             <tr>
-                                            <th scope="row">
-                                              <%= message.length - i %>
-                                            </th>
+                                                <td><%= skip+ index + 1 %></td>
+                                                <td>
+                                                    <% order.product.forEach(item=> { %>
+                                                        <%= item.productId.name %>
+                                                    <% }) %>
+                                                </td>
+                                                <td><%= order.product.length %></td>
+                                                <td><%= order.date.toISOString().substring(0,10) %></td>
+                                                <td><a style="color: black;" href="/singleorderview?id=<%=order._id %>">View Details</a></td>
 
-                                           
-                                                <td>
-                                                    <% message[i].product.forEach(function(product) { %>
-                                                        <%= product.productId.name %> <br>
-                                                    <% }); %>
-                                                </td>
-                                                
-                                                  
-                                                <td>
-
-                                                    <%= message[i].date.toISOString().substring(0,10) %>
-                                                </td>
-                                                
-                                                 
-                                                <td>
-                                                    <%= message[i].totalAmount %>
-                                                </td>
-                                               
-                                                <td>
-                                                    <%= message[i].paid %>
-                                                </td>
-                                                <td>
-                                                    <%= message[i].paymentMethod %>
-                                                </td>
-                                               
-                                                <td>
-                                                   
-                                                    <a href="/singleorderview?id=<%= message[i]._id %>"> View Details</a>
-                                                   
-                                               
-                                            </td>
-                                                
-                                                <% if (message[i].status=='placed' ) { %>
+                                                <% if (order.status=='placed' ) { %>
                                                     <td>Placed</td>
-                                                    <td><a style="color:rgb(228, 19, 19);"
-                                                            href="/editorder?id=<%=message[i]._id%>">Cancel</a>
-                                                    </td>
+                                                    <td><a style="color:rgb(228, 19, 19);" href="/editorder?id=<%=order._id%>">Cancel</a></td>
                                                 <% } %>
 
-                                                <% if (message[i].status=='req-for-cancellation' ) { %>
-                                                    <td>Requested for cancellation</td>
+                                                <% if (order.status=='req-for-cancellation' ) { %>
+                                                    <td>Requested for cancel</td>
                                                     <td>-</td>
                                                 <% } %>
 
-                                                <% if (message[i].status=='cancelled' ) { %>
-                                                    <td>cancelled</td>
+                                                <% if (order.status=='cancelled' ) { %>
+                                                    <td>Cancelled</td>
                                                     <td>-</td>
                                                 <% } %>
 
-                                                <% if (message[i].status=='delivered' ) { %>
+                                                <% if (order.status=='delivered' ) { %>
                                                     <td>Shipped</td>
-                                                    <td><a style="color:rgb(228, 19, 19);"
-                                                        href="/editorder?id=<%=message[i]._id%>">Return</a>
-                                                </td>
+                                                    <td><a style="color:rgb(228, 19, 19);" href="/editorder?id=<%=order._id%>">Return</a></td>
                                                 <% } %>
 
-                                                <% if (message[i].status=='req-for-return' ) { %>
+                                                <% if (order.status=='req-for-return' ) { %>
                                                     <td>Requested for return</td>
-                                                    <td>-</td>
+                                                    <td></td>
                                                 <% } %>
 
-                                                <% if (message[i].status=='returned' ) { %>
+                                                <% if (order.status=='returned' ) { %>
                                                     <td>Returned</td>
-                                                    <td>-</td>
+                                                    <td></td>
                                                 <% } %>
 
                                             </tr>
-                                            <% } %>
-                                                <% } else { %>
-                                                    <tr>
-                                                        <td colspan="3">Orders not found</td>
-                                                    </tr>
-                                                    <% } %>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="7">No orders found.</td>
+                                        </tr>
+                                    <% } %>
                                 </tbody>
                             </table>
                         </div>
+
+                       
                     </div>
                 </div>
             </div>
-            <div style="margin-top: 50px;margin-bottom: 50px;margin-left: 45%;" >
+            <!-- Continue Shopping button -->
+            <div style="margin-top: 50px;margin-bottom: 50px;margin-left: 45%;">
                 <button style="background-color: rgba(97, 6, 243, 0.788);">
-                <a href="/shop">CONTINUE SHOPPING</a></button>
+                    <a href="/shop">CONTINUE SHOPPING</a></button>
             </div>
         </div><!--End Row-->
     </div>
-    <!-- Bootstrap core JavaScript-->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-
-    <!-- simplebar js -->
-    <script src="plugins/simplebar/js/simplebar.js"></script>
-    <!-- sidebar-menu js -->
-    <script src="js/sidebar-menu.js"></script>
-
-    <!-- Custom scripts -->
-    <script src="js/app-script.js"></script>
-
-</body>
-
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!--End Row-->
-    </div>
-
-
-
 
     <!-- Bootstrap core JavaScript-->
     <script src="js/jquery.min.js"></script>
@@ -183,8 +133,18 @@
     <!-- sidebar-menu js -->
     <script src="js/sidebar-menu.js"></script>
 
+    <!-- DataTables JavaScript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
     <!-- Custom scripts -->
     <script src="js/app-script.js"></script>
+
+    <!-- Initialize DataTables -->
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable();
+        });
+    </script>
 
 </body>
 

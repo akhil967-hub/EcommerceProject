@@ -10,6 +10,8 @@ const getBannerPage = async function (req, res) {
         res.render("banner",{message: bannerData, active:"banners"}) 
     } catch (error) {
         console.log(error);
+        return res.status(500).render('admin500');
+
     }
 }
 // --------------------------------------------------------------
@@ -22,6 +24,8 @@ const getBannerAddPage = async function (req, res) {
         res.render("add-banner", {active:"banners"}) 
     } catch (error) {
         console.log(error);
+        return res.status(500).render('admin500');
+
     }
 }
 // --------------------------------------------------------------
@@ -40,6 +44,8 @@ const addBanner = async function (req, res) {
         res.render("add-banner", {active:"banners"}) 
     } catch (error) {
         console.log(error);
+        return res.status(500).render('admin500');
+
     }
 }
 // --------------------------------------------------------------
@@ -59,6 +65,8 @@ const statusChange = async function (req, res) {
         res.redirect("/admin/banners")
     } catch (error) {
         console.log(error);
+        return res.status(500).render('admin500');
+
     }
 }
 // --------------------------------------------------------------

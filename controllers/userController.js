@@ -4,13 +4,15 @@ const products = require('../models/productModel')
 const category = require('../models/categoryModel')
 const CategoryModel = require('../models/categoryModel')
 const banners  = require('../models/bannerModel')
+const walletTransaction = require('../models/walletTransactionModel')
 const orders = require('../models/orderModel')
 const argon2= require('argon2')
 const bcrypt = require('bcrypt')
 const nodemailer = require('nodemailer');
 const session = require('express-session');
 const config = require('../config/config')
-// camel case is not followe bcoz to create a camelcase randomString below in fn
+const shortid = require('shortid');
+const easyinvoice = require('easyinvoice')
 const randomstring = require('randomstring')
 
 let dontenv = require('dotenv')
@@ -33,7 +35,7 @@ const securePassword = async (password) => {
         return passwordHash
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -74,7 +76,7 @@ sendVerifyMail = async (name, email, otp) => {
         })
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -115,7 +117,7 @@ sendForgetPasswordMail = async (name, email, token) => {
         })
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -140,7 +142,7 @@ const getHome = async function (req, res) {
         }
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -155,7 +157,7 @@ const getLogin = async function (req, res) {
         res.render('login', {active:"home"})
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -171,7 +173,7 @@ const getRegister = async function (req, res) {
         res.render('register', {active:"home"})
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -188,13 +190,25 @@ const postRegister = async (req, res) => {
         const emailExists = await users.findOne({ email: req.body.email })
 
         if (emailExists) {
-            res.render('register', { message: 'Email ID already registered',active:"home" })
+            res.render('register', { message: 'Email ID already registered',active:"" })
         }
         else {
 
             if (req.body.password == req.body.confirmPassword) {
                 const password = req.body.password.trim()
                 const bcryptedPassword = await securePassword(password)
+
+                // Generate a referral code for the new user
+                const referralCode = shortid.generate();
+
+                // Check if the referring user's code is provided
+                const referrerCode = req.body.referralCode;
+
+                // Find the referrer using the provided referral code
+                const referrer = await users.findOne({ referralCode: referrerCode });
+
+
+                // create new user
                 const userData = new users({
                     name: req.body.name,
                     email: req.body.email,
@@ -202,8 +216,17 @@ const postRegister = async (req, res) => {
                     password: bcryptedPassword,
                     is_admin: 0,
                     is_verified: 0,
-                    is_block: 0
+                    is_block: 0,
+                    referralCode: referralCode
                 })
+
+                // Award bonus if a valid referrer is found
+                if (referrer) {
+                    // Credit 100 rupees to the new user's wallet
+                    userData.wallet += 100;
+
+                    
+                }
                 const userDoc = await userData.save()
                 if (userDoc) {
                     var randomNumber = Math.floor(Math.random() * 9000) + 1000;
@@ -221,7 +244,7 @@ const postRegister = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -263,7 +286,7 @@ const postLogin = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 };
@@ -279,7 +302,7 @@ const userLogout = async (req, res) => {
         res.redirect('/')
     } catch (error) {
         console.log(error.mesage);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -295,7 +318,7 @@ const getOtpPage = async (req, res) => {
         res.render('otp-page', {active:"home"})
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -320,7 +343,7 @@ const verifyOtp = async (req, res) => {
 
     } catch (error) {
         console.log(error.mesage)
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -342,7 +365,7 @@ const getProductPage = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -360,7 +383,7 @@ const resendOtp = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 
@@ -377,11 +400,11 @@ const getProfile = async (req, res) => {
         const userData = await users.findById({ _id: id })
         const addressData = await address.findOne({ user: id })
 
-        res.render('profile', {session:id, userData, addressData, active:"home" })
+        res.render('profile', {session:id, userData, addressData, active:"" })
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -392,7 +415,7 @@ const editProfile = async (req, res) => {
         const userData = await users.findById({ _id: id })
    
       if (userData) {
-        res.render('edit', { userData, active:"home"});
+        res.render('edit', { userData, active:""});
       } else {
         res.redirect('/profile');
       }
@@ -414,7 +437,7 @@ const editProfile = async (req, res) => {
       res.redirect('/profile');
     } catch (error) {
       console.error(error.message);
-      res.status(500).send('Internal Server Error');
+      return res.status(500).render('users500');
     }
   };
 // --------------------------------------------------------------
@@ -486,29 +509,71 @@ const getShopPage = async (req, res) => {
         });
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 };
 
 // --------------------------------------------------------------
 
+// const getMyOrders = async (req, res) => {
+//     try {
+//         const userData = await users.findOne({ _id: req.session.user_id })
+//         const userid = req.session.user_id
+//         const orderData = await orders.find({ userId: userid }).populate('product.productId');
+//         console.log(orderData);
+        
+//         res.render('my-orders', { message: orderData, session:userid, userData,  active:"" })
+
+
+//     } catch (error) {
+//         console.log(error.message);
+//         return res.status(500).render('users500');
+
+        
+//     }
+// }
+
 const getMyOrders = async (req, res) => {
     try {
-        const userid = req.session.user_id
-        const orderData = await orders.find({ userId: userid }).populate('product.productId');
-        console.log(orderData);
-        
-        res.render('my-orders', { message: orderData, active:"home" })
+        const userData = await users.findOne({ _id: req.session.user_id });
+        const userid = req.session.user_id;
+        const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not specified
+        const pageSize = 50; // Number of orders per page
 
+        // Calculate the skip value based on the page and pageSize
+        const skip = (page - 1) * pageSize;
+
+        const orderData = await orders.find({ userId: userid })
+            .populate('product.productId')
+            .sort({ date: -1 }) // Sort by date in descending order
+            .skip(skip)
+            .limit(pageSize);
+
+        // Get the total number of orders for pagination
+        const totalOrders = await orders.countDocuments({ userId: userid });
+
+        // Calculate the total number of pages
+        const totalPages = Math.ceil(totalOrders / pageSize);
+
+        res.render('my-orders', {
+            message: orderData,
+            session: userid,
+            userData,
+            active: "",
+            currentPage: page,
+            skip,
+            totalPages: totalPages // Make sure to include totalPages
+        });
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
-
-        
+        return res.status(500).render('users500');
     }
-}
+};
+
+
+
 
 const getSingleOrderView = async (req, res) => {
     try {
@@ -516,14 +581,15 @@ const getSingleOrderView = async (req, res) => {
         const id = req.query.id
         const session = req.session.user_id
         const orderData = await orders.findById(id).populate("product.productId")
-        console.log(orderData);
 
        
         const product = orderData.product
        
-        res.render('single-orderview', { product, orderData, session, userData, active:"cart" })
+        res.render('single-orderview', { product, orderData, session, userData, active:"" })
     } catch (error) {
         console.log(error.message);
+        return res.status(500).render('users500');
+
     }
 }
 
@@ -533,13 +599,12 @@ const loadwallet = async (req, res) => {
         // Fetch the user's wallet transactions
         const userId = req.session.user_id;
         const wallets = await walletTransaction.find({ userId: userId });
-        console.log(wallets);
-
+        const userData = await users.findOne({ _id: req.session.user_id })
         // Render the wallet page with user data and wallet transactions
-        res.render('wallet', { user: req.session.user, wallets, active:"home" });
+        res.render('wallet', { session:userId, userData,  user: req.session.user, wallets, active:"" });
     } catch (error) {
         console.error('Error fetching wallet transactions:', error);
-        res.status(500).send('Internal Server Error');
+        return res.status(500).render('users500');
     }
 };
 

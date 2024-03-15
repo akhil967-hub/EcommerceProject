@@ -63,7 +63,7 @@ const addToCart = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
         
     }
@@ -89,14 +89,17 @@ const getCart = async (req, res) => {
 
                 let Total = 0;
                 let outOfStockProducts = [];
-                for (let i = 0; i < products.length; i++) {
-                    const product = products[i].productId;
-                    const productStock = product.stock;
-                    const cartQuantity = products[i].count;
+                for (let i = 0; i < products?.length; i++) {
+                    
+                    const product = products[i]?.productId;
+                    console.log(products[i], "haai");
+                    const productStock = product?.stock;
+                    const cartQuantity = products[i]?.count;
+                    
                     if (productStock >= cartQuantity) {
-                        Total += products[i].productPrice * cartQuantity;
+                        Total += products[i]?.productPrice * cartQuantity;
                     } else {
-                        outOfStockProducts.push(product._id);
+                        outOfStockProducts.push(product?._id);
                     }
                 }
                 console.log(Total);
@@ -113,8 +116,8 @@ const getCart = async (req, res) => {
             res.render("cartEmpty", { session, userData, message: "No product added", active:'cart' });
         }
     } catch (error) {
-        console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        console.log(error);
+        return res.status(500).render('users500');
 
 
     }
@@ -147,10 +150,10 @@ const getCheckout = async function (req, res) {
         const Total = total[0].total;
 
         const addressdata = await address.findOne({ user: session });
-        res.render('checkout', { session, userData, addressdata, products: cartData.products, Total, active:'cart' });
+        res.render('checkout', { session, userData, addressdata, products: cartData.products, Total, active:'' });
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -166,10 +169,10 @@ const getAddAddress = async function (req, res) {
     try {
         const session = req.session.user_id
         const userData = await users.findById({ _id: session })
-        res.render('add-address', { userData, session, active:'home' })
+        res.render('add-address', { userData, session, active:'' })
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -222,7 +225,7 @@ const postAddAddress = async function (req, res) {
     } catch (error) {
 
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
 
     }
@@ -318,7 +321,7 @@ const removeProduct = async function (req, res) {
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -335,7 +338,7 @@ const postremoveProduct = async function (req, res) {
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -371,7 +374,7 @@ const cartQuantityIncrese = async (req, res, next) => {
         next();
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -410,7 +413,7 @@ const totalproductprice = async (req, res, proId) => {
         res.json({ success: true, Total });
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 };

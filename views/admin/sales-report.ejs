@@ -7,98 +7,160 @@
       <div class="row">
         <div class="col-lg-12">
 
-            <form action=""  style="margin-top: 10px;">
-                <label for="">From</label>
-                <input type="date" name="from"style="background-color: rgb(11,82,136); color: silver;">
-                <label for="">To</label>
-                <input type="date" name="to"  style="background-color: rgb(11,82,136); color: silver;">
-                <input type="submit" value="Filter" style="background-color: rgb(11,82,136); color: silver;">
-            </form>
-
-            <div class="sales-report-form">
-              <form action="/admin/daily-report" method="post">
-                <label for="daily">Daily sales</label>
-                <input type="date" name="daily" id="daily">
-                <button class="sales-report-button" type="submit">View</button>
-              </form>
-            </div>
-            <br>
-  <div class="sales-report-form">
-    <form action="/admin/monthly-report" method="post">
-      <label for="monthly">Monthly sales</label>
-      <input type="month" name="month" id="month">
-      <button class="sales-report-button" type="submit">View</button>
-    </form>
-  </div>
-  <br>
-  <div class="sales-report-form">
-    <form action="/admin/yearly-report" method="post">
-      <label for="yearly">Yearly sales</label>
-      <input type="number" name="yearly" id="yearly" min="2022" max="2024" value="2023">
-      <button class="sales-report-button" type="submit">View</button>
-    </form>
-  </div>
 
 
+          <form action="" style="margin-top: 10px;">
+            <label for="from">From</label>
+            <input type="date" name="from" style="background-color: rgb(11,82,136); color: silver;" id="fromDate">
 
-            <form action="/admin/salesreport/download" method="get">
-              <button style="background-color: rgb(11,82,136); color: silver; margin-top: 8px;">Download</button></a> 
+            <label for="to">To</label>
+            <input type="date" name="to" style="background-color: rgb(11,82,136); color: silver;" id="toDate">
 
+            <input type="submit" value="Filter" style="background-color: rgb(11,82,136); color: silver;">
           </form>
 
-            
+          <div class="sales-report-form">
+            <form action="/admin/daily-report" method="post">
+              <label for="daily">Daily sales</label>
+              <input type="date" name="daily" id="daily">
+              <button class="sales-report-button" type="submit">View</button>
+            </form>
+          </div>
+
+          <div class="sales-report-form">
+            <form action="/admin/monthly-report" method="post">
+              <label for="monthly">Monthly sales</label>
+              <input type="month" name="month" id="month">
+              <button class="sales-report-button" type="submit">View</button>
+            </form>
+          </div>
+
+          <div class="sales-report-form">
+            <form action="/admin/yearly-report" method="post">
+              <label for="yearly">Yearly sales</label>
+              <input type="number" name="yearly" id="yearly" min="2022" max="2024" value="2023">
+              <button class="sales-report-button" type="submit">View</button>
+            </form>
+          </div>
+
+          <form action="/admin/salesreport/download" method="get">
+            <button style="background-color: rgb(11,82,136); color: silver; margin-top: 8px;">Download</button>
+          </form>
 
           <div class="card" style="margin-top: 25px;">
-            
+
             <div class="card-body">
               <h5 class="card-title">Sales Report</h5>
               <div class="table-responsive">
                 <table class="table table-hover">
                   <thead>
-                    
                     <tr>
-                      <th scope="col">#</th>
+                      <th scope="col">No.</th>
                       <th scope="col">Name</th>
                       <th scope="col">Order Date</th>
-                      <th scope="col">Method</th>
+                      <th scope="col">Payment<br>Method</th>
                       <th scope="col">Amount</th>
                       <th scope="col">Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <% if (message.length> 0) { %>
-                      <% for (let i=message.length-1; i >=0; i--) { %>
-                        <tr>
+                        <% message.forEach((order, index)=> { %>
+                          <tr>
                           <th scope="row">
-                            <%= message.length-i %>
+                            <%= skip+ index + 1 %>
+
                           </th>
                           <td>
-                            <%= message[i].user %>
+                            <%= order.user %>
                           </td>
                           <td>
-
-                            <%= message[i].date.toISOString().substring(0,10) %>
+                            <%= order.date.toISOString().substring(0, 10) %>
                           </td>
                           <td>
-                            <%= message[i].paymentMethod %>
+                            <%= order.paymentMethod %>
                           </td>
                           <td>
-                            <%= message[i].totalAmount %>
+                            <%= order.totalAmount %>
                           </td>
                           <td>
-                            <%= message[i].status %>
+                            <%= order.status %>
                           </td>
                         </tr>
-                        <% } %>
-                          <% } else { %>
-                            <tr>
-                              <td colspan="3">Orders not found</td>
-                            </tr>
-                            <% } %>
+                        <% }) %>
+                         
+
+                              <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                  // Get the current date in the format "YYYY-MM-DD"
+                                  var currentDate = new Date().toISOString().split('T')[0];
+
+                                  // Set the max attribute for the "From" input to prevent future dates
+                                  var fromDateInput = document.getElementById('fromDate');
+                                  if (fromDateInput) {
+                                    fromDateInput.max = currentDate;
+                                  } else {
+                                    console.error('Element with id "fromDate" not found.');
+                                  }
+
+                                  // Set the max attribute for the "To" input to prevent future dates
+                                  var toDateInput = document.getElementById('toDate');
+                                  if (toDateInput) {
+                                    toDateInput.max = currentDate;
+                                  } else {
+                                    console.error('Element with id "toDate" not found.');
+                                  }
+
+                                  toDateInput.addEventListener('change', function () {
+                                    if (fromDateInput.value > toDateInput.value) {
+                                      alert('To date cannot be earlier than From date. Please select a valid range.');
+                                      toDateInput.value = fromDateInput.value;
+                                    }
+                                  });
+                                });
+                              </script>
                   </tbody>
                 </table>
               </div>
-            </div>
-          </div>
-        </div>
-      </div><!--End Row-->
+
+
+              <nav aria-label="navigation">
+                <ul class="pagination justify-content-end mt-50">
+                    <% if (currentPage > 1) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage - 1 %>"
+                                style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; 
+                                background-color:#563f03; color: #fff; text-align: center; margin: 5px; border-radius: 5px; 
+                                cursor: pointer; text-decoration: none;">
+                                Prev
+                            </a>
+                        </li>
+                    <% } %>
+            
+                    <% for (let j = 1; j <= totalPages; j++) { %>
+                        <li class="page-item <% if (j === currentPage) { %>active<% } %>">
+                            <a class="page-link" href="?page=<%= j %>"
+                                style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; 
+                                background-color:#563f03; color: #fff; text-align: center; margin: 5px; border-radius: 5px;
+                                 cursor: pointer; text-decoration: none;">
+                                <%= j %>
+                            </a>
+                        </li>
+                    <% } %>
+            
+                    <% if (currentPage < totalPages) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage + 1 %>"
+                                style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; 
+                                background-color:#563f03; color: #fff; text-align: center; margin: 5px; border-radius: 5px; 
+                                cursor: pointer; text-decoration: none;">
+                                Next
+                            </a>
+                        </li>
+                    <% } %>
+                </ul>
+            </nav>
+            
+
+
+
+              <!--End Row-->

@@ -10,14 +10,14 @@ const isLogin = async(req,res,next)=>{
              return next()
             
             }else{
-              return res.render('404')
+              return res.render('blockedPage')
             }
         }else{
            return res.redirect("/login");
         }
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+       // return res.status(500).send("Internal Server Error");  
 
     }
 }
@@ -27,14 +27,14 @@ const isUserLogin = async(req,res,next)=>{
         const user = await users.findById(req.session?.user_id)
         if(user){
             if(user.is_block === 1){
-                return res.render('404')
+                return res.render('blockedPage')
             }
         }
            return next()
         
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        //return res.status(500).send("Internal Server Error");  
 
     }
 }
@@ -45,7 +45,7 @@ const isLoginHome = async(req,res,next)=>{
         if(user){
             if(user.is_block === 1){
             
-              return res.render('404')
+              return res.render('blockedPage')
             }else{
               return res.redirect('/')
             }
@@ -54,7 +54,7 @@ const isLoginHome = async(req,res,next)=>{
         }
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        //return res.status(500).send("Internal Server Error");  
 
     }
 }

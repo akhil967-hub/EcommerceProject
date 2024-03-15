@@ -5,6 +5,11 @@
     <section class="product spad">
         <div class="container">
             <div class="row">
+                <button class="btn btn-success ml-3 m-3" onclick="printPage()">Print</button>
+                <button class="btn btn-success ml-3 m-3" onclick="invoice('<%= JSON.stringify(product) %>')">Download
+                    Invoice</button>
+                <!-- <a href="/generateInvoice/<%= orderData._id %>" > Download Invoice </a> -->
+
                 <div class="col-lg-12 col-md-12">
                     <!-- <h3> <u>Customer Address</u></h3>
              
@@ -15,12 +20,11 @@
                                 <th>No.</th>
                                 <th scope="col">Product</th>
                                 <th scope="col">Image</th>
-
                                 <th scope="col">Quantity</th>
-                                <th scope="col">Status</th>
                                 <th scope="col"> Amount</th>
-
-
+                                <th scope="col">Payment</th>
+                                <th scope="col">Status</th>
+                                <th scope="col"> Address</th>
                             </tr>
                             </the ad>
                         <tbody>
@@ -34,24 +38,28 @@
                                     <td>
                                         <%=value.productId.name%>
                                     </td>
-                                    <td> 
+                                    <td>
                                         <a href="/product?id=<%=value.productId._id%>"><img
                                                 style="width: 50px;height: 50px; margin-right: 20px;"
-                                                src="../productimages/<%=value.productId.image[0]%>" alt="">
-                                            </a>
+                                                src="../uploads/<%=value.productId.image[0]%>" alt="">
+                                        </a>
                                     </td>
                                     <td>
                                         <%= value.count%>
                                     </td>
-
-
+                                    <td>
+                                        ₹ <%= value.productId.price%>
+                                    </td>
+                                    <td>
+                                        <%= orderData.paymentMethod %>
+                                    </td>
                                     <td>
                                         <%= orderData.status%>
                                     </td>
                                     <td>
-                                        <%= value.productId.price%>
-                                    </td>
+                                        <%= orderData.deliveryDetails %>
 
+                                    </td>
                                 </tr>
 
                                 <%})%>
@@ -61,24 +69,193 @@
                 </div>
                 <div class="col-lg-6 col-md-3 order_box" style="margin: 30px;">
                     <h2>Your Order Payement Deatails</h2>
-    
+
                     <ul class="list list_2">
-    
+
                         <li>
-    
+
                             <a>Total
-                                <span id="total1">RS :<%=orderData.totalAmount%></span>
+                                <span id="total1">RS :₹ <%=orderData.totalAmount%></span>
                             </a>
-    
+
                         </li>
                     </ul>
-    
-    
+
+
                 </div>
             </div>
-            
+
         </div>
     </section>
+
+    <script>
+        function printPage() {
+            window.print();
+        }
+    </script>
+
+    <script>
+        // function invoice(products) {
+        //     var product = JSON.parse(products)
+        //     ' <% for (let i = 0; i < orderData.length; i++) { %>'
+
+        //     var data = {
+        //         "sender": {
+        //             "company": "OPAL JWELS",
+        //             "address": "Saravanampatty",
+        //             "zip": "641035",
+        //             "city": "Coimbatore",
+        //             "country": "India"
+        //         },
+        //         // Your recipient
+        //         "client": {
+        //             "company": "<%= orderData.user %>",
+        //             "address": "<%= orderData.deliveryDetails %>",
+
+
+        //         },
+        //         "information": {
+        //             "number": "<%= orderData._id %>",
+        //             "date": "<%= orderData.createdAt.toDateString() %>",
+        //             "due-date": "<%= orderData.createdAt.toDateString() %>",
+        //         },
+
+        //         "products": product.map((value) => {
+        //             return {
+        //                 "quantity": value.count,
+        //                 "description": value.productId.name,
+        //                 "tax-rate": 6,
+        //                 "price": value.productId.price,
+
+        //             };
+        //         }),
+        //         "bottom-notice": "Kindly pay your invoice within 15 days.",
+        //         "settings": {
+        //             "currency": "INR",
+        //             "tax-notation": "vat",
+        //         },
+        //         "translate": {
+
+        //         },
+        //     };
+        //     ' <% } %>'
+        //     easyinvoice.createInvoice(data, function (result) {
+        //         easyinvoice.download('myInvoice.pdf', result.pdf);
+        //     });
+        // }
+
+        var easyinvoice = require('easyinvoice');
+        function invoice(products) {
+          var product = JSON.parse(products)
+
+        var data = {
+            apiKey: "free", // Please register to receive a production apiKey: https://app.budgetinvoice.com/register
+            mode: "development", // Production or development, defaults to production   
+            images: {
+                // The logo on top of your invoice
+                // logo: "https://public.budgetinvoice.com/img/logo_en_original.png",
+                // The invoice background
+                // background: "https://public.budgetinvoice.com/img/watermark-draft.jpg"
+            },
+            // Your own data
+            sender: {
+                company: "OPAL JWELS ",
+                address: "Saravanampatti",
+                zip: "641035",
+                city: "Coimbatore",
+                country: "India"
+                // custom1: "custom value 1",
+                // custom2: "custom value 2",
+                // custom3: "custom value 3"
+            },
+            // Your recipient
+            client: {
+                company: "<%= orderData.user %>",
+                address: "<%= orderData.deliveryDetails %>",
+                // zip: "4567 CD",
+                // city: "Clientcity",
+                // country: "Clientcountry"
+                // custom1: "custom value 1",
+                // custom2: "custom value 2",
+                // custom3: "custom value 3"
+            },
+            information: {
+                // Invoice number
+                number:  "<%= orderData._id %>",
+                // Invoice data
+                date: "<%= orderData.createdAt.toDateString() %>", 
+                // Invoice due date
+                "due-date": "<%= orderData.createdAt.toDateString() %>",            },
+            // The products you would like to see on your invoice
+            // Total values are being calculated automatically
+            // products: [
+            //     {
+            //         quantity: 2,
+            //         description: "Product 1",
+            //         taxRate: 6,
+            //         price: 33.87
+            //     },
+                
+            // ],
+
+            "products": product.map((value)=>{
+                return {
+                    "quantity":value.count,
+                    "description":value.productId.name,
+                    // "tax-rate":6,
+                    "price":value.productId.price
+
+                }
+            }),
+            // The message you would like to display on the bottom of your invoice
+            bottomNotice: "Kindly pay your invoice within 15 days.",
+            // Settings to customize your invoice
+            settings: {
+                currency: "INR", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
+                // locale: "nl-NL", // Defaults to en-US, used for number formatting (See documentation 'Locales and Currency')        
+                // marginTop: 25, // Defaults to '25'
+                // marginRight: 25, // Defaults to '25'
+                // marginLeft: 25, // Defaults to '25'
+                // marginBottom: 25, // Defaults to '25'
+                // format: "A4", // Defaults to A4, options: A3, A4, A5, Legal, Letter, Tabloid
+                // height: "1000px", // allowed units: mm, cm, in, px
+                // width: "500px", // allowed units: mm, cm, in, px
+                // orientation: "landscape" // portrait or landscape, defaults to portrait
+            },
+            // Translate your invoice to your preferred language
+            translate: {
+                // invoice: "FACTUUR",  // Default to 'INVOICE'
+                // number: "Nummer", // Defaults to 'Number'
+                // date: "Datum", // Default to 'Date'
+                // dueDate: "Verloopdatum", // Defaults to 'Due Date'
+                // subtotal: "Subtotaal", // Defaults to 'Subtotal'
+                // products: "Producten", // Defaults to 'Products'
+                // quantity: "Aantal", // Default to 'Quantity'
+                // price: "Prijs", // Defaults to 'Price'
+                // productTotal: "Totaal", // Defaults to 'Total'
+                // total: "Totaal", // Defaults to 'Total'
+                // taxNotation: "btw" // Defaults to 'vat'
+            },
+
+            // Customize enables you to provide your own templates
+            // Please review the documentation for instructions and examples
+            // "customize": {
+            //      "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html 
+            // }
+        };
+
+        //Create your invoice! Easy!
+        easyinvoice.createInvoice(data, function (result) {
+              easyinvoice.download('myInvoice.pdf', result.pdf);
+          });
+        }
+    </script>
+
+
+
+
+
+
     <!-- Product Section End -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -89,5 +266,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/easyinvoice/dist/easyinvoice.min.js"></script>
+
 
     <%- include('../partials/users/footer.ejs') %>

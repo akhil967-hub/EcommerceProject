@@ -1,6 +1,10 @@
 <%- include('../partials/admin/header.ejs') %>
 
-  <div style="background-color: aliceblue;" class="clearfix"></div>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+  <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+  <!-- <div style="background-color: rgb(8, 135, 247);" class="clearfix"></div> -->
 
   <div class="content-wrapper">
     <div class="container-fluid">
@@ -10,13 +14,14 @@
             <div class="card-body">
               <h5 class="card-title">Order Details</h5>
               <div class="table-responsive">
-                <table class="table table-hover">
+                <table style="color: black; background-color: darkturquoise;"  
+                id="orderTable" class="table table-hover">
                   <thead>
                     <tr>
                       <th scope="col">#</th>
                       <th scope="col">Name</th>
                       <th scope="col">Order Date</th>
-                      <th scope="col">Payment Method</th>
+                      <th scope="col">Payment<br> Method</th>
                       <th scope="col">Amount</th>
                       <th scope="col">Status</th>
                       <th scope="col">Action</th>
@@ -24,13 +29,13 @@
                   </thead>
                   <tbody>
                     <% if (message.length> 0) { %>
-                      <% for (let i=message.length-1; i >= 0; i--) { %>
+                      <% for (let i=message.length-1; i>= 0; i--) { %>
                         <tr>
                           <th scope="row">
                             <%= message.length-i %>
                           </th>
                           <td>
-                            <a href="/admin/orders/singleorder?id=<%= message[i]._id %>">
+                            <a href="/admin/orders/singleorder?id=<%= message[i]._id %>"" style="color: black;">
                               <%= message[i].user %>
                             </a>
                           </td>
@@ -47,7 +52,7 @@
 
                           <% if (message[i].status=='placed' ) { %>
                             <td>Placed</td>
-                            <td><a style="color:rgb(21, 232, 10);"
+                            <td><a style="color:rgb(232, 10, 10);"
                                 href="/admin/editorder?id=<%=message[i]._id%>">Delivered</a></td>
                             <% } %>
 
@@ -57,7 +62,7 @@
                                 <% } %>
 
                                   <% if (message[i].status=='req-for-cancellation' ) { %>
-                                    <td>Requested for cancellation</td>
+                                    <td>Requested for cancel</td>
                                     <td><a style="color:rgb(8, 237, 8);"
                                         href="/admin/editorder?id=<%=message[i]._id%>">Approve</a></td>
                                     <% } %>
@@ -87,6 +92,13 @@
                             <% } %>
                   </tbody>
                 </table>
+                <script>
+                  $(document).ready(function () {
+                    $('#orderTable').DataTable({
+                      "bInfo": false  // Disable the display of information about the table
+                    });
+                  });
+                </script>
               </div>
             </div>
           </div>

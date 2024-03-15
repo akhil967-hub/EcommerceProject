@@ -8,7 +8,7 @@ const getCategory = async (req, res) => {
         res.render('category', { message: categoryDatas, active:"category" })
     } catch (error) {
         console.log(error.message)
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('admin500');
 
     }
 }
@@ -23,7 +23,7 @@ const getAddCategoryPage = async (req, res) => {
         res.render('add-category', {active:"category"})
     } catch (error) {
         console.log(error.message)
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('admin500');
 
     }
 }
@@ -35,30 +35,30 @@ const getAddCategoryPage = async (req, res) => {
 // ---------------------------------------------------------------------------------
 const addCategory = async (req, res) => {
     try {
-        const newCategory = req.body.category
+        const newCategory = req.body.category;
         if (newCategory.trim().length == 0) {
-            res.render('add-category', { message: 'Enter category name' , active:"category"}, )
+            res.render('add-category', { message: 'Enter category name', active: "category" });
+            return; // Ensure to return after rendering the response
         }
-        const categoryExists = await category.findOne({ name: new RegExp('^' + newCategory + '$', 'i') })
+
+        const categoryExists = await category.findOne({ name: new RegExp('^' + newCategory + '$', 'i') });
 
         if (categoryExists) {
-            res.render('add-category', { message: 'Category already registered', active:"category" })
-        }
-        else {
+            res.render('add-category', { message: 'Category already registered', active: "category" });
+        } else {
             const categoryData = new category({
                 name: req.body.category,
                 is_block: 0
-            })
-            const categoryDoc = await categoryData.save()
-            res.redirect('/admin/category')
+            });
+            const categoryDoc = await categoryData.save();
+            res.redirect('/admin/category');
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
-
+        return res.status(500).render('admin500');
     }
 }
+
 // ---------------------------------------------------------------------------------
 
 
@@ -72,7 +72,7 @@ const blockCategory = async (req, res) => {
         res.redirect('/admin/category')
     } catch (error) {
         console.log(error.message)
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('admin500');
 
     }
 }
@@ -89,7 +89,7 @@ const unBlockCategory = async (req, res) => {
         res.redirect('/admin/category')
     } catch (error) {
         console.log(error.message)
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('admin500');
 
     }
 }
@@ -101,17 +101,17 @@ const editCategory = async (req, res) => {
     try {
         const id = req.query.id;
         const categoryData = await category.findById({ _id: id });
-        console.log(categoryData);
+        
 
         if (categoryData) {
-            res.render('edit-category', { categoryData, active:"category" });
+            res.render('edit-category', { categoryData,  active:"category" });
         } else {
             res.redirect('/admin/category');
         }
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");
+        return res.status(500).render('admin500');
     }
 }
 
@@ -123,16 +123,27 @@ const postEditCategory = async (req, res) => {
         const newData = await category.updateMany({ _id: id }, {
             $set: {
                 name: req.body.name,
-                // Add other fields for category update
             }
         });
 
         res.redirect('/admin/category');
+    
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");
+        return res.status(500).render('admin500');
     }
+}
+
+const fetchCategory = async (req, res)=>{
+    try{
+
+    const categoryNames = await category.find({})
+    res.json(categoryNames)
+
+}catch(error){
+    res.status(500).render('admin500')
+}
 }
 
 
@@ -143,5 +154,6 @@ module.exports = {
     editCategory,
     postEditCategory,
     blockCategory,
-    unBlockCategory
+    unBlockCategory, 
+    fetchCategory
 }

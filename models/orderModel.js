@@ -20,6 +20,11 @@ const orderSchema = new mongoose.Schema({
             required: true
         },
     }],
+    address: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address' // Replace 'Address' with the actual model name for the address
+      },
+    
     paid: { type: Number },
     wallet: { type: Number },
     totalAmount: { type: Number },

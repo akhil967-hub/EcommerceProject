@@ -127,8 +127,15 @@
       </div>
     </div>
   </div>
+
+</div><!--End content-wrapper-->
+<div style="margin-left: 20%; margin-top: 5%;" >
+  <p style="color: blue;">Your Referral Code: <span id="referralCode"><%= userData.referralCode %> </span></p>
+  <button onclick="copyReferralCode()">Copy</button>
+</div>
    
   <div >
+    <br><br>
     <a href="/myorders"><button type="button" class="btn btn-primary btn-lg btn-block" 
       style="background-color: rgb(9,143,182);margin-left: 350px;">MY ORDERS</button></a>
   </div> 
@@ -147,7 +154,8 @@
    
     <div style="margin-bottom: 5%; margin-top: 5%;">
       <a href="/wallet" style="display: block; width: 100%; ">
-        <button type="button" class="btn btn-primary btn-lg btn-block" style="background-color: rgb(102, 104, 102); color: white; width: 100%; border-radius: 0;">WALLET : Rs.<%= userData.wallet%></button>
+        <button type="button" class="btn btn-primary btn-lg btn-block" 
+        style="background-color: rgb(102, 104, 102); color: white; width: 100%; border-radius: 0;">WALLET : Rs.<%= userData.wallet%></button>
       </a>
     </div>
 
@@ -157,17 +165,16 @@
 
 <script>
   
-
-  function shareViaEmail() {
-    const referralCode = document.getElementById('referralCode').innerText;
-    const userEmail = prompt('Enter your friend\'s email:');
-    // Use a backend API to send the email with the referral code
+  function copyReferralCode() {
+    const referralCode = document.getElementById('referralCode');
+    const tempInput = document.createElement('input');
+    document.body.appendChild(tempInput);
+    tempInput.value = referralCode.innerText;
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    alert('Referral code copied!');
   }
-
-  // function shareOnFacebook() {
-  //   const referralCode = document.getElementById('referralCode').innerText;
-  //   // Use the Facebook API to share a post with the referral code
-  // }
 </script>
 
   

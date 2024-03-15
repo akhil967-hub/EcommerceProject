@@ -1,5 +1,9 @@
 <%- include('../partials/admin/header.ejs') %>
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
 
   <div class="clearfix"></div>
 
@@ -17,13 +21,20 @@
             <div class="card-body">
               <h5 class="card-title">COUPON DETAILS</h5>
               <div class="table-responsive">
-                <table class="table table-hover">
+                <table style="color: black; background-color: darkturquoise;" id="couponsTable" class="table table-hover" >              
+
                   <thead>
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Coupon code</th>
-                      <th scope="col">Discount amount</th>
-                      <th scope="col">Expiry Date</th>
+                      <th scope="col">No.</th>
+                      <th scope="col">Coupon<br>Code</th>
+                      <th scope="col">Discount</th>
+                      <th scope="col">Max<br>Discount</th>
+                      <th scope="col">Min<br>Cart</th>
+                      <th scope="col">Count</th>
+                      <th scope="col">Expiry<br>Date</th>
+                      <th scope="col">Action</th>
+                      
+
                       <!-- <th scope="col">Mx-crt-amt </th> -->
                       <!-- <th scope="col">Max discount</th>
                       <th scope="col">Limit</th>
@@ -33,16 +44,25 @@
                   </thead>
                   <tbody>
                     <% if (message.length> 0) { %>
-                      <% for (let i=0; i < message.length; i++) { %>
+                      <% for (let i=message.length-1; i >=0; i--) { %>
                         <tr>
                           <th scope="row">
-                            <%= i+1 %>
+                            <%= message.length-i %>
                           </th>
                           <td>
                             <%= message[i].code %>
                           </td>
                           <td>
-                            <%= message[i].discountAmount%>(<%=message[i].discountType%>) %>
+                            <%= message[i].discountAmount%><%= message[i].discountType === 'percentage' ? '%' : '₹' %>
+                          </td>
+                          <td>
+                            <%= message[i].maxDiscountAmount %>
+                          </td>
+                          <td>
+                            <%= message[i].maxCartAmount %>
+                          </td>
+                          <td>
+                            <%= message[i].maxUsers %>
                           </td>
                           <td>
                             <%= message[i].expiryDate.toISOString().substring(0,10)%>
@@ -60,10 +80,10 @@
                             <%= message[i].status %>
                           </td> -->
                           <td>
+                            <button  type="button" class="btn btn-outline-info"><a
+                                href="/admin/coupons/delete?id=<%= message[i]._id%>" style="color: rgb(251, 8, 8);">delete</a></button>
                             <button type="button" class="btn btn-outline-info"><a
-                                href="/admin/coupons/delete?id=<%= message[i]._id%>">delete</a></button>
-                            <button type="button" class="btn btn-outline-info"><a
-                                href="/admin/coupons/edit?id=<%= message[i]._id%>">edit</a></button>
+                                href="/admin/coupons/edit?id=<%= message[i]._id%>" style="color: darkgreen;">edit</a></button>
                           </td>
                         </tr>
                         <% } %>
@@ -74,6 +94,13 @@
                             <% } %>
                   </tbody>
                 </table>
+                <script>
+                  $(document).ready(function() {
+                    $('#couponsTable').DataTable({
+                      "bInfo": false  // Disable the display of information about the table
+                    });
+                  });
+                </script>
               </div>
             </div>
           </div>

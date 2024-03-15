@@ -8,7 +8,6 @@ const cart = require('../models/cartModel')
 // =-------------------------------------------------------------------
 const addtowhishlist = async (req, res) => {
     try {
-        console.log('suc');
         const productId = req.body.id
         const session = req.session.user_id
         const productData = await product.findOne({ _id: productId })
@@ -32,7 +31,6 @@ const addtowhishlist = async (req, res) => {
             }
             res.json({ status: true })
         } else {
-            console.log('yes')
             const whishList = new wishlist({
                 user: userData._id,
                 product: [{
@@ -46,6 +44,8 @@ const addtowhishlist = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message)
+        return res.status(500).render('users500');
+
     }
 }
 // =-------------------------------------------------------------------\
@@ -69,6 +69,8 @@ const getWishlist = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message)
+        return res.status(500).render('users500');
+
     }
 }
 // =-------------------------------------------------------------------
@@ -125,6 +127,8 @@ const addToCartFromWishlist = async (req, res) => {
         
     } catch (error) {
         console.log(error.message)
+        return res.status(500).render('users500');
+
     }
 }
 // =-------------------------------------------------------------------
@@ -142,6 +146,8 @@ const removeProduct = async (req, res) => {
         
     } catch (error) {
         console.log(error.message)
+        return res.status(500).render('users500');
+
     }
 }
 // =-------------------------------------------------------------------

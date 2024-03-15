@@ -30,7 +30,7 @@
                 <table style="color: black; background-color: darkturquoise;" id="productTable"  >              
                      <thead>
                     <tr>
-                      <th scope="col">#</th>
+                      <th scope="col">No.</th>
                       <th scope="col">Name</th>
                       <th scope="col">Price</th>
                       <th scope="col">Category</th>
@@ -57,11 +57,13 @@
                             <%= message[i].category %>
                           </td>
                           <td>
-                            <img style="width: 80px; height: 80px;" src="/productimages/<%= message[i].image[0] %>" alt="test">
-                            <img style="width: 80px; height: 80px;" src="/productimages/<%= message[i].image[1] %>" alt="test">
-                            <img style="width: 80px; height: 80px;" src="/productimages/<%= message[i].image[2] %>" alt="test">
+                            <% if (message[i].image.length> 0) { %>
+                              <% for (let j = message[i].image.length-1; j >= 0; j--) { %>
+                            <img style="width: 80px; height: 80px;" src="/uploads/<%= message[i].image[j] %>" alt="test">
+                            
 
-
+                              
+                              <% }} %>
                         </td>
                         <td>
                           <%= message[i].stock %>

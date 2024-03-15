@@ -6,7 +6,10 @@ const User = require('../models/userModel')
 const order = require('../models/orderModel');
 const cart = require('../models/cartModel');
 const productModel = require('../models/productModel');
+const walletTransactionCollection = require('../models/walletTransactionModel');
 const Razorpay = require('razorpay')
+const puppeteer = require('puppeteer')
+
 
 
 let dontenv = require('dotenv')
@@ -18,7 +21,23 @@ var instance = new Razorpay({
 });
 
 
+const { ObjectId } = require('mongoose').Types;
 
+async function recordWalletTransaction(userId, transactionType, amount, description) {
+    try {
+      const transaction = new walletTransactionCollection({
+        userId,
+        transactionType,
+        amount,
+        description,
+      });
+  
+      await transaction.save();
+      console.log('Wallet transaction recorded successfully.');
+    } catch (error) {
+      console.error('Error recording wallet transaction:', error);
+    }
+  }
 
 
 //place the order
@@ -74,6 +93,12 @@ const placeOrder = async (req, res) => {
         }
 
         await User.findOneAndUpdate({ _id: req.session.user_id }, { $set: { wallet: walletAmountBalance } })
+
+        const userId = req.session.user_id;
+        const transactionType = 'debit';
+        const transactionAmount = walletAmountUsed;
+        const transactionDescription = 'Order payment';
+        await recordWalletTransaction(userId, transactionType, transactionAmount, transactionDescription);
 
         let payment = req.body.payment;
         let address = req.body.address
@@ -141,7 +166,7 @@ const placeOrder = async (req, res) => {
             const totalamount = saveOrder.paid
 
             var options = {
-                amount: totalamount ,
+                amount: totalamount*100 ,
                 currency: "INR",
                 receipt: "" + orderid
             }
@@ -155,7 +180,7 @@ const placeOrder = async (req, res) => {
     }
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -189,6 +214,8 @@ const verifyOnlinePayment = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        return res.status(500).render('users500');
+
 
     }
 }
@@ -205,7 +232,7 @@ const orderplaced = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
 
     }
@@ -231,15 +258,54 @@ const editOrder = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
 
 
+//generate invoice for user side
+// const generateInvoice = async (req, res) => {
+//     try{
+//         const  orderid = req?.params.orderid;
+//         const orderData = await order.findById(orderid)
+//             console.log(orderData,"ljhf");
+//         const htmlContent = await invoiceHtml(orderData)
+    
+//         // Launch a headless browser using Puppeteer with the 'new' headless mode
+//         const browser = await puppeteer.launch({ headless: 'new' });
+//         const page = await browser.newPage();
+//         // Set the HTML content of the page
+//         await page.setContent(htmlContent);
+        
+//         // Generate a PDF file from the HTML content
+//         const pdfBuffer = await page.pdf({
+//              format: 'A4',
+//              margin: {
+//                 top: '30px',
+//                 right: '30px',
+//                 bottom: '30px',
+//                 left: '30px',
+//             },
+//             });
+//         await browser.close();
+    
+//         // Set the response headers for PDF download
+//         res.setHeader('Content-Type', 'application/pdf');
+//         res.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
+//         res.send(pdfBuffer);
+//     }catch(error){
+//         console.log(error.message);
+//     }
+// }
+
+
+
 module.exports = {
+    recordWalletTransaction,
      placeOrder, 
      editOrder, 
      orderplaced,
-     verifyOnlinePayment
+     verifyOnlinePayment,
+    // generateInvoice
 }

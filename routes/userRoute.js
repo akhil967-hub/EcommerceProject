@@ -42,24 +42,23 @@ user_route.use(session({
     cookie:{maxAge : 9000000},
 }))
 
-user_route.use(express.json())
-user_route.use(express.urlencoded({extended:true}))
+
 
 
 // USER CONTROLLER
 
-user_route.get('/',nocache(),auth.isUserLogin,getHome)
-user_route.get('/shop',nocache(),auth.isUserLogin,getShopPage)
-user_route.get('/login',auth.isLoginHome,getLogin)
+user_route.get('/',nocache(),getHome)
+user_route.get('/shop',nocache(),getShopPage)
+user_route.get('/login',getLogin)
 user_route.get('/register',nocache(),getRegister)
 user_route.get('/profile',nocache(),auth.isLogin,getProfile)
 user_route.get('/edit',nocache(), auth.isLogin,editProfile)
 user_route.get('/user-logout',nocache(),auth.isLogin,userLogout)
 user_route.get('/otp-page',getOtpPage)
-user_route.get('/product',nocache(),auth.isLogin,getProductPage)
+user_route.get('/product',nocache(),getProductPage)
 user_route.get('/resend-otp',resendOtp)
 user_route.get('/myorders',nocache(),auth.isLogin, getMyOrders)
-user_route.get('/singleorderview',nocache(), getSingleOrderView)
+user_route.get('/singleorderview',nocache(), auth.isLogin, getSingleOrderView)
 user_route.get('/wallet',auth.isLogin,loadwallet)
 
 
@@ -87,11 +86,11 @@ user_route.get('/cart', auth.isLogin, cartController.getCart)
 user_route.get('/checkout', auth.isLogin,cartController.getCheckout)
 user_route.get('/add-address', auth.isLogin,cartController.getAddAddress)
 user_route.get('/removeproduct', auth.isLogin, cartController.removeProduct)
-user_route.get('/edit-address', cartController.getEditAddress);
+user_route.get('/edit-address', auth.isLogin, cartController.getEditAddress);
 
 
 
-user_route.post('/addToCart', cartController.addToCart)
+user_route.post('/addToCart',  cartController.addToCart)
 user_route.post('/add-address', cartController.postAddAddress)
 user_route.post('/edit-address', cartController.postEditAddress);
 user_route.post('/delete-address/:index',cartController.deleteAddress);
@@ -102,8 +101,9 @@ user_route.patch('/cartqntyincrese',auth.isLogin,cartController.cartQuantityIncr
 // ORDER CONTROLLER
 
 
-user_route.get('/editorder', orderController.editOrder)
-user_route.get('/order-place', orderController.orderplaced)
+user_route.get('/editorder', auth.isLogin, orderController.editOrder)
+user_route.get('/order-place', auth.isLogin, orderController.orderplaced)
+
 
 
 user_route.post('/verifyPayment',orderController.verifyOnlinePayment)
@@ -120,6 +120,7 @@ user_route.post('/addtowhishlist', auth.isLogin,wishlistController.addtowhishlis
 user_route.post('/whishToCart', auth.isLogin, wishlistController.addToCartFromWishlist)
 
 user_route.post('/applyCoupon',couponController.applyCoupon)
+user_route.post('/remove-coupon', couponController.removeCoupon);
 
 
 

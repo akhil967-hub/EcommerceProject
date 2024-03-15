@@ -1,86 +1,109 @@
-<style>
-    /* Style for the table */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
+<%- include('../partials/users/header.ejs') %>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 
-    th, td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: center;
-    }
+    <!DOCTYPE html>
+    <html lang="en">
 
-    th {
-        background-color: #e4e8eb;
-        color: black;
-    }
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Opal Jwels</title>
+        <!-- loader-->
+        <link href="css/pace.min.css" rel="stylesheet" />
+        <script src="js/pace.min.js"></script>
+        <!--favicon-->
+        <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+        <!-- simplebar CSS-->
+        <link href="plugins/simplebar/css/simplebar.css" rel="stylesheet" />
+        <!-- Bootstrap core CSS-->
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <!-- animate CSS-->
+        <link href="css/animate.css" rel="stylesheet" type="text/css" />
+        <!-- Icons CSS-->
+        <link href="css/icons.css" rel="stylesheet" type="text/css" />
+        <!-- Sidebar CSS-->
+        <link href="css/sidebar-menu.css" rel="stylesheet" />
+        <!-- Custom Style-->
+        <link href="css/app-style.css" rel="stylesheet" />
 
-    /* Style for alternating row colors */
-    tbody tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
+        <!-- DataTables CSS -->
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 
-    /* Style for the card */
-    .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-    }
+    </head>
 
-    /* Style for the card header */
-    .card-header {
-        background-color: #c4cace;
-        color: black;
-        padding: 12px;
-        border-bottom: 1px solid #ddd;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-    }
-</style>
-<br>
-<div class="head-img d-flex align-items-center justify-content-center">
-    <h1 class=" text-white " style="text-shadow: 2px 1px 2px rgb(0, 0, 0);">Wallet</h1>
-</div>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Transactions</h3>
+    <body class="bg-theme bg-theme1">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card" style="margin-top: 40px;">
+                        <div style="background-color: rgba(4, 80, 99, 0.687);" class="card-body text-center">
+                            <h5 class="card-title">Wallet Details</h5>
+                            <div class="table-responsive">
+                                <table style="color:black" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Type</th>
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Description</th>
+                                            <th class="text-center">Timestamp</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% wallets.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).reverse().forEach(wallet => { %>
+                                            <% if (wallet.amount !== 0) { %>
+                                                <tr>
+                                                    <td class="text-center"><%= wallet.transactionType %></td>
+                                                    <td class="text-center"><%= wallet.amount %></td>
+                                                    <td class="text-center"><%= wallet.description %></td>
+                                                    <td class="text-center"><%= new Date(wallet.timestamp).toLocaleString() %> </td>
+                                                </tr>
+                                            <% } %>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <!-- <th>Transaction ID</th>
-                                <th>User ID</th> -->
-                                <th class="text-center">Type</th>
-                                <th class="text-center">Amount</th>
-                                <th class="text-center">Description</th>
-                                <th class="text-center">Timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% wallets.forEach(function(wallet) { %>
-                                <!-- <td><%= wallet._id %></td>
-                                <td><%= wallet.userId %></td> -->
-                                <tr>
-                                    <td class="text-center"><%= wallet.transactionType %></td>
-                                    <td class="text-center"><%= wallet.amount %></td>
-                                    <td class="text-center"><%= wallet.description %></td>
-                                    <td class="text-center"><%= wallet.timestamp %></td>
- 
-                                </tr>
-                            <% }); %>
-                        </tbody>
-                    </table>
                 </div>
-            </div>
+                <!-- Continue Shopping button -->
+                <div style="margin-top: 50px;margin-bottom: 50px;margin-left: 45%;">
+                    <button style="background-color: rgba(97, 6, 243, 0.788);">
+                        <a href="/shop">CONTINUE SHOPPING</a></button>
+                </div>
+            </div><!--End Row-->
         </div>
-    </div>
-</section>
 
- 
+        <!-- Bootstrap core JavaScript-->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+
+        <!-- simplebar js -->
+        <script src="plugins/simplebar/js/simplebar.js"></script>
+        <!-- sidebar-menu js -->
+        <script src="js/sidebar-menu.js"></script>
+
+        <!-- DataTables JavaScript -->
+        <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+        <!-- Custom scripts -->
+        <script src="js/app-script.js"></script>
+
+        <!-- Initialize DataTables -->
+        <script>
+            $(document).ready(function () {
+                $('.table').DataTable();
+            });
+        </script>
+
+    </body>
+
+    </html>

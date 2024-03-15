@@ -41,7 +41,7 @@ const sendmail = (name, email) => {
 
     } catch (error) {
         console.log(error.message)
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -52,7 +52,7 @@ const loadforgotpassword = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -61,7 +61,7 @@ const loadforgototp = async (req, res) => {
         res.render('otpforgotpassword', {active:""})
     } catch (error) {
         console.log(error.message)
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -83,7 +83,7 @@ const verifymail = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -99,7 +99,7 @@ const verifyforgototp = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }
@@ -128,7 +128,7 @@ const resetpassword = async (req, res) => {
         res.redirect('/login');
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('users500');
 
     }
 }

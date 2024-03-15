@@ -11,6 +11,8 @@ const getProducts = async (req, res) => {
         res.render('products', { message: productsData, active:"products" })
     } catch (error) {
         console.log(error)
+        return res.status(500).render('admin500');
+
     }
 }
 // ---------------------------------------------------------------------------------
@@ -25,6 +27,8 @@ const getAddProducts = async (req, res) => {
         res.render('add-products', { categoryData, active:"products" })
     } catch (error) {
         console.log(error)
+        return res.status(500).render('admin500');
+
     }
 }
 // ---------------------------------------------------------------------------------
@@ -60,7 +64,7 @@ const addProduct = async (req, res) => {
     }
     catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");
+        return res.status(500).render('admin500');
 
     }
 }
@@ -76,6 +80,8 @@ const deleteProduct = async (req, res) => {
         res.redirect('/admin/products')
     } catch (error) {
         console.log(error)
+        return res.status(500).render('admin500');
+
     }
 }
 // ---------------------------------------------------------------------------------
@@ -89,6 +95,7 @@ const editProduct = async (req, res) => {
         const productData = await products.findById({ _id: id })
         console.log(productData);
         const categoryData = await category.find({ is_block: 0 })
+        console.log(productData.category, "halllo");
         
         if (productData) {
             res.render('edit-product', { productData, categoryData, active:"products" })
@@ -99,7 +106,7 @@ const editProduct = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('admin500');
 
     }
 }
@@ -112,17 +119,18 @@ const editProduct = async (req, res) => {
 // ---------------------------------------------------------------------------------
 const postEditProduct = async (req, res) => {
     try {
-        let status;
+       
         if (req.body.stock <= 0) {
-            status = 'Out Of Stock'
+            req.body.status = 'Out Of Stock'
         }else{
-            status = 'In Stock'
+            req.body.status = 'In Stock'
         }
         const id = req.body.id
-         const filesArray = req.files
-        const filenamesArray = filesArray.map(file => file.filename);
+         
+        // const filenamesArray = filesArray.map(file => file.filename);
 
-        if (req.files) {
+
+        if (req?.files) {
             const newData = await products.updateMany({ _id: id }, {
                 $set: {
                     name: req.body.name,
@@ -130,10 +138,10 @@ const postEditProduct = async (req, res) => {
                     category: req.body.category,
                     description: req.body.description,
                     stock: req.body.stock,
-                    status: status
+                    status:  req.body.status
                 },
                 $push: {
-                    image: { $each: filenamesArray } // Using $each to push multiple values
+                    image: { $each: req.body.image } // Using $each to push multiple values
                 
             }
             })
@@ -148,7 +156,7 @@ const postEditProduct = async (req, res) => {
                     category: req.body.category,
                     description: req.body.description,
                     stock: req.body.stock,
-                    status: status
+                    status:  req.body.status
                 }
             })
 
@@ -158,7 +166,7 @@ const postEditProduct = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('admin500');
 
     }
 }
@@ -185,7 +193,7 @@ const deleteImage = async (req, res) => {
     } catch (error) {
 
         console.log(error.message);
-        return res.status(500).send("Internal Server Error");  
+        return res.status(500).render('admin500');
 
 
     }
@@ -232,7 +240,7 @@ const productImage = async (req, res) => {
         res.send(image); // Or send a JSON response if needed
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).render('admin500');
     }
 };
 

@@ -41,6 +41,10 @@ const userSchema = mongoose.Schema({
    is_block: {
       type: Number,
       required:true
+   },
+   referralCode: {
+      type: String,
+      unique: true
    }
 
 
