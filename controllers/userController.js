@@ -598,10 +598,28 @@ const loadwallet = async (req, res) => {
     try {
         // Fetch the user's wallet transactions
         const userId = req.session.user_id;
-        const wallets = await walletTransaction.find({ userId: userId });
-        const userData = await users.findOne({ _id: req.session.user_id })
-        // Render the wallet page with user data and wallet transactions
-        res.render('wallet', { session:userId, userData,  user: req.session.user, wallets, active:"" });
+        const wallets = await walletTransaction.find({ userId: userId }); // No sorting applied
+
+        // Separate debit transactions
+        const debitTransactions = wallets.filter(wallet => wallet.transactionType === 'debit');
+        // Separate other transaction types
+        const otherTransactions = wallets.filter(wallet => wallet.transactionType !== 'debit');
+
+        // Sort debit transactions by timestamp in descending order
+        const sortedDebitTransactions = debitTransactions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        // Sort other transactions by timestamp in descending order
+        const sortedOtherTransactions = otherTransactions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      
+
+        // Concatenate debit transactions and other transactions
+        const sortedWallets = sortedDebitTransactions.concat(sortedOtherTransactions);
+        
+        
+
+        const userData = await users.findOne({ _id: req.session.user_id });
+        
+        // Render the wallet page with user data and sorted wallet transactions
+        res.render('wallet', { session: userId, userData, user: req.session.user, wallets: sortedWallets, active: "" });
     } catch (error) {
         console.error('Error fetching wallet transactions:', error);
         return res.status(500).render('users500');

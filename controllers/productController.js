@@ -6,13 +6,11 @@ const session = require('express-session')
 // ---------------------------------------------------------------------------------
 const getProducts = async (req, res) => {
     try {
-        
         const productsData = await products.find()
         res.render('products', { message: productsData, active:"products" })
     } catch (error) {
         console.log(error)
-        return res.status(500).render('admin500');
-
+        return res.status(500).render('admin500')
     }
 }
 // ---------------------------------------------------------------------------------
@@ -28,7 +26,6 @@ const getAddProducts = async (req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(500).render('admin500');
-
     }
 }
 // ---------------------------------------------------------------------------------
@@ -36,38 +33,49 @@ const getAddProducts = async (req, res) => {
 
 // POST ADD PRODUCTS  -- add product details to db
 // ---------------------------------------------------------------------------------
+// const addProduct = async (req, res) => {
+//     try {
+//         if (req.body.stock <= 0) {
+//            req.body.status = 'Out Of Stock'
+//         }else{
+//             req.body.status = 'In Stock'
+//         }
+        
+       
+//          await products.create(req.body)
+//         res.redirect('/admin/products')
+//         }
+      
+//     catch (error) {
+//         console.log(error.message);
+//         return res.status(500).render('admin500');
+//     }
+// }
+
 const addProduct = async (req, res) => {
     try {
-        // const img = []
-        // for (i = 0; i < req.files.length; i++) {
-        //     img[i] = req.files[i].filename
-        // }
-        
-        
         if (req.body.stock <= 0) {
-           req.body.status = 'Out Of Stock'
-        }else{
-            req.body.status = 'In Stock'
+            req.body.status = 'Out Of Stock';
+        } else {
+            req.body.status = 'In Stock';
         }
-        // const productData = new products({
-        //     name: req.body.name,
-        //     price: req.body.price,
-        //     category: req.body.category,
-        //     description: req.body.description,
-        //     image: img,
-        //     stock: req.body.stock,
-        //     status: status
-        // })
-         await products.create(req.body)
-        res.redirect('/admin/products')
+        
+        // Filter out deleted images before saving to the database
+        let images = req.body?.image;
+        
+        const deletedImages = req.body.deletedImages.split(','); // Convert comma-separated string to array
+        images = images.filter(image => !deletedImages.includes(image));
+        req.body.image = images;
 
-    }
-    catch (error) {
+        await products.create(req.body);
+        res.redirect('/admin/products');
+    } catch (error) {
         console.log(error.message);
         return res.status(500).render('admin500');
-
     }
 }
+
+
 // ---------------------------------------------------------------------------------
 
 
@@ -81,7 +89,6 @@ const deleteProduct = async (req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(500).render('admin500');
-
     }
 }
 // ---------------------------------------------------------------------------------
@@ -107,7 +114,6 @@ const editProduct = async (req, res) => {
     } catch (error) {
         console.log(error.message);
         return res.status(500).render('admin500');
-
     }
 }
 // ---------------------------------------------------------------------------------
@@ -125,9 +131,10 @@ const postEditProduct = async (req, res) => {
         }else{
             req.body.status = 'In Stock'
         }
+
+        
         const id = req.body.id
          
-        // const filenamesArray = filesArray.map(file => file.filename);
 
 
         if (req?.files) {
@@ -142,8 +149,8 @@ const postEditProduct = async (req, res) => {
                 },
                 $push: {
                     image: { $each: req.body.image } // Using $each to push multiple values
-                
-            }
+                }
+            
             })
 
             res.redirect('/admin/products')
@@ -161,13 +168,12 @@ const postEditProduct = async (req, res) => {
             })
 
             res.redirect('/admin/products')
-
         }
+    
 
     } catch (error) {
         console.log(error.message)
         return res.status(500).render('admin500');
-
     }
 }
 

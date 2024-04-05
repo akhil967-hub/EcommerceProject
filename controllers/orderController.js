@@ -66,14 +66,12 @@ const placeOrder = async (req, res) => {
             { $unwind: "$products" }, { $project: { productPrice: "$products.productPrice", count: "$products.count" } }, 
             { $group: { _id: null, total: { $sum: { $multiply: ["$productPrice", "$count"] } } } }]);
         // let Total = req.body.amount
-        console.log(total);
 
         let discountAmount = req.body.discountAmount
         
 
         const TotalInitially = total.length > 0 ? total[0].total : 0;
         const Total = TotalInitially - discountAmount
-        console.log(Total);
 
         const userWalletAmount = userData.wallet
         

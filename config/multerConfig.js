@@ -35,7 +35,7 @@ const processImages = async (req, res, next) => {
             }
          } catch (error) {
           console.error(error);
-          res.status(500).json({ error: 'An error occurred while processing images.' });
+          res.status(500).json({ error: 'Please upload an image file' });
         }
     
       };

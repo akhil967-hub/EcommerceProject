@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema({
    },
    wallet: {
       type: Number,
-      default: 100
+      default: 0
    },
    is_admin: {
       type: Number,

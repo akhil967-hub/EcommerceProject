@@ -262,6 +262,7 @@ const editOrder = async (req, res) => {
   try {
     const id = req.query.id
     const orderData = await order.findById({ _id: id })
+    
     const totalBillAmount = orderData.totalAmount
 
     if (orderData.status === 'placed') {
@@ -275,6 +276,7 @@ const editOrder = async (req, res) => {
       const walletAmountUsed = orderData.wallet
       const userid = req.session.user_id
       const userData = await users.findById({ _id: userid })
+     
 
       const newWallet = parseInt(userData.wallet + walletAmountUsed)
       if (orderData.paymentMethod === 'COD') {
@@ -282,7 +284,6 @@ const editOrder = async (req, res) => {
       } else {
         await users.findByIdAndUpdate({ _id: userid }, { $set: { wallet: totalBillAmount } })
       }
-
 
       const userId = userid;
       const transactionType = 'credit';
@@ -303,16 +304,21 @@ const editOrder = async (req, res) => {
         const quantity = product[i].count
         await productModel.findByIdAndUpdate(productId, { $inc: { stock: +quantity } })
       }
-      // -----
 
       res.redirect('/admin/orders')
     }
 
     if (orderData.status === 'req-for-return') {
+      const userid = orderData.userId
 
 
-      const userid = req.session.user_id
-      await users.findByIdAndUpdate({ _id: userid }, { $set: { wallet: totalBillAmount } })
+      const userData = await users.findOne({ _id: userid })
+      if (orderData && userData) {
+
+        const newWallet = parseInt(totalBillAmount + userData.wallet);
+        await users.findByIdAndUpdate({ _id: userid }, { $set: { wallet: newWallet } })
+      }
+      
 
 
       const userId = userid;
@@ -336,12 +342,12 @@ const editOrder = async (req, res) => {
         await productModel.findByIdAndUpdate(productId, { $inc: { stock: +quantity } })
 
       }
-      // -----
+     
       res.redirect('/admin/orders')
     }
 
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
     return res.status(500).render('admin500');
 
   }
@@ -416,7 +422,7 @@ const getSalesReport = async (req, res) => {
           }
         },
         {
-          $sort:({ _id: -1 })
+          $sort: ({ _id: -1 })
         },
         {
           $skip: (currentPage - 1) * perPage
@@ -440,8 +446,9 @@ const getSalesReport = async (req, res) => {
 
       req.session.Orderdtls = orderdetails;
 
-      res.render("sales-report", { message: orderdetails, from, to, active: "salesreport",
-       currentPage, totalPages, skip });
+      res.render("sales-report", {
+        message: orderdetails, from, to, active: "salesreport",
+        currentPage, totalPages, skip });
     } else {
       const orderdetails = await order.find({
         status: { $nin: ["cancelled", "returned"] }
@@ -454,7 +461,6 @@ const getSalesReport = async (req, res) => {
           $nin: ["cancelled", "returned"]
         }
       });
-      console.log(orderdetails, "yhyu");
 
 
       const totalPages = Math.ceil(totalOrdersCount / perPage);
@@ -509,38 +515,20 @@ const downloadSalesReport = async (req, res) => {
 };
 //................................................................
 
-// const dailySales = async (req, res) => {
-//     try {
-//       const orderDate = req.body.daily;
-//       const startDate = moment(orderDate, 'YYYY-MM-DD').startOf('day').toDate();
-//       const endDate = moment(orderDate, 'YYYY-MM-DD').endOf('day').toDate();
-//       console.log(orderDate, "orderDate");
-//       console.log(startDate, "startDate");
-//       console.log(endDate, "endDate");
 
-//       dailyorders = await Order.find({
-//         date: {
-//           $gte: startDate,
-//           $lte: endDate
-//         }
-//       }).populate("address");
-//       // console.log(dailyorders, "DailyOrdersssss");
-//       totalOrderBill = dailyorders.reduce(
-//         (total, order) => total + Number(order.totalAmount),
-//         0
-//       );
-//       // console.log(totalOrderBill, "totalOrderBill");
-//       res.render('dailysales', { dailyorders, totalOrderBill, active:'salesreport' });
-//     } catch (error) {
-//       console.log(error.message);
-//     }
-//   };
 
 const dailySales = async (req, res) => {
   try {
-    const orderDate = req.body.daily;
-    const startDate = moment(orderDate, 'YYYY-MM-DD').startOf('day').toDate();
-    const endDate = moment(orderDate, 'YYYY-MM-DD').endOf('day').toDate();
+    let orderDate = req.body.daily;
+    const formattedDate = moment(orderDate, ['YYYY-MM-DD', 'MM-DD-YYYY', 'DD-MM-YYYY'], true);
+    if (!formattedDate.isValid()) {
+      return res.status(400).json({ error: "Invalid date format. Please provide date in YYYY-MM-DD format." });
+    }
+    orderDate = formattedDate.format('YYYY-MM-DD');
+
+    const startDate = moment(orderDate).startOf('day').toDate();
+    const endDate = moment(orderDate).endOf('day').toDate();
+
 
     const page = req.query.page || 1;
     const perPage = 10; // Number of items per page
@@ -574,59 +562,87 @@ const dailySales = async (req, res) => {
       totalOrderBill,
       active: 'salesreport',
       currentPage: page,
-      totalPages
+      totalPages,
+      orderDate
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 };
 
 
+
 const dailyDownload = async (req, res) => {
-  const workbook = new excel.Workbook();
-  const worksheet = workbook.addWorksheet("Sales Data");
-  worksheet.columns = [
-    { header: "Order ID", key: "orderId", width: 10 },
-    { header: "Delivery Name", key: "deliveryName", width: 20 },
-    { header: "Order Date", key: "orderDate", width: 15 },
-    { header: "Discount", key: "discount", width: 10 },
-    { header: "Total Bill", key: "totalBill", width: 10 },
-    { header: "totalOrders", key: "totalOrders", width: 10 },
-    { header: "totalRevenue", key: "totalRevenue", width: 20 },
-  ];
+  try {
+   const orderDate = req.query.date
+    const parsedDate = moment(orderDate, 'YYYY-MM-DD', true); // Parse date using moment.js
 
-  dailyorders.forEach((order) => {
+
+    if (!parsedDate.isValid()) {
+      return res.status(400).json({ error: 'Invalid date format'});
+    }
+
+    const startDate = parsedDate.startOf('day').toDate();
+    const endDate   = parsedDate.endOf('day').toDate();
+
+    // Fetch daily orders from the database
+    const dailyorders = await order.find({
+      date: {
+        $gte: startDate,
+        $lte: endDate
+      }
+    }).populate('address');
+
+    // Calculate total order bill
+    const totalOrderBill = dailyorders.reduce(
+      (total, order) => total + Number(order.totalAmount),
+      0
+    );
+
+    // Create a new Excel workbook and worksheet
+    const workbook = new excel.Workbook();
+    const worksheet = workbook.addWorksheet('Sales Data');
+
+    // Define the columns in the worksheet
+    worksheet.columns = [
+      { header: 'Order ID', key: 'orderId', width: 10 },
+      { header: 'Delivery Name', key: 'deliveryName', width: 20 },
+      { header: 'Order Date', key: 'orderDate', width: 15 },
+      { header: 'Discount', key: 'discount', width: 10 },
+      { header: 'Total Bill', key: 'totalBill', width: 10 }
+    ];
+
+    // Add data to the worksheet
+    dailyorders.forEach((order) => {
+      worksheet.addRow({
+         deliveryName: order.user,
+        orderDate: order.date,
+        discount: order.discount,
+        totalBill: order.totalAmount
+      });
+    });
+
+    // Add total orders and total revenue rows
     worksheet.addRow({
-      orderId: order.orderId,
-      deliveryName: order.address.name,
-      orderDate: order.date,
-      discount: order.discount,
-      totalBill: order.total,
+      totalOrders: dailyorders.length,
+      totalRevenue: totalOrderBill
     });
-  });
-  worksheet.addRow({
-    totalOrders: dailyorders.length,
-    totalRevenue: totalOrderBill,
-  });
-  res.setHeader(
-    "Content-Type",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  );
-  res.setHeader(
-    "Content-Disposition",
-    "attachment; filename=" + "SalesData.xlsx"
-  );
 
-  workbook.xlsx
-    .write(res)
-    .then(() => {
-      res.end();
-    })
-    .catch((err) => {
+    // Set response headers for file download
+    const fileName = 'DailySalesReport.xlsx';
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
 
-      res.status(500).send("An error occurred while generating the Excel file");
-    });
+    // Stream the Excel content to the response
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).render('admin500');
+  }
 };
+
+
 
 const monthlysales = async (req, res) => {
   try {
@@ -634,11 +650,8 @@ const monthlysales = async (req, res) => {
     const year = parseInt(monthinput.substring(0, 4));
     const month = parseInt(monthinput.substring(5));
 
-
-
-    const startDate = new Date(year, month -1, 1,0, 23, 59, 59, 999);
+    const startDate = new Date(year, month - 1, 1, 0, 23, 59, 59, 999);
     const endDate = new Date(year, month, 0, 23, 59, 59, 999);
-    
 
     // Pagination parameters
     const page = parseInt(req.query.page) || 1;
@@ -653,16 +666,6 @@ const monthlysales = async (req, res) => {
       },
       status: 'delivered' // Filter by status
     }).sort({ date: 'desc' }).skip(skip).limit(perPage);
-
-
-    // monthlyOrders = await Order.find({
-    //   date: {
-    //     $gte: startDate,
-    //     $lte: endDate,
-    //   },
-    //   status: 'delivered' // Filter by status
-    // }).sort({ date: 'desc' });
-
 
     totalMonthlyBill = monthlyOrders.reduce(
       (total, order) => total + Number(order.totalAmount),
@@ -686,7 +689,7 @@ const monthlysales = async (req, res) => {
       totalPages
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     return res.status(500).render('admin500');
 
   }
@@ -704,6 +707,14 @@ const monthlyDownload = async (req, res) => {
     { header: "totalOrders", key: "totalOrders", width: 10 },
     { header: "totalRevenue", key: "totalRevenue", width: 20 },
   ];
+
+  const monthlyOrders = await Order.find({
+    date: {
+      $gt: startDate,
+      $lte: endDate,
+    },
+    status: 'delivered' // Filter by status
+  }).sort({ date: 'desc' })
 
   monthlyOrders.forEach((order) => {
     worksheet.addRow({
@@ -737,13 +748,16 @@ const monthlyDownload = async (req, res) => {
 
 const yearlysales = async (req, res) => {
   try {
-    const orders = await Order.find();
+    // const orders = await Order.find();
     const year = req.body.yearly;
 
-    yearlyorders = orders.filter((order) => {
-      const orderYear = new Date(order.date).getFullYear();
-      return orderYear === parseInt(year);
-    });
+  //  const yearlyorders = orders.filter((order) => {
+  //     const orderYear = new Date(order.date).getFullYear();
+  //     return orderYear === parseInt(year);
+  //   });
+  const yearlyorders = await Order.find({
+    date: { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }
+  });
 
     const perPage = 10;
     let currentPage = parseInt(req.query.page) || 1;
@@ -764,18 +778,21 @@ const yearlysales = async (req, res) => {
       (total, order) => total + Number(order.totalAmount),
       0
     );
-    res.render("yearlyOrder", { 
-      yearlyorders: paginatedOrders, 
-      totalYearlyBill, 
+    res.render("yearlyOrder", {
+      yearlyorders: paginatedOrders,
+      totalYearlyBill,
       active: 'salesreport',
       currentPage,
-      totalPages  }); 
-    }catch (error) {
+      totalPages,
+      year
+    });
+  } catch (error) {
     res.status(500).send({ message: `${error}` });
   }
 };
 
 const yearlydownload = async (req, res) => {
+
   const workbook = new excel.Workbook;
   const worksheet = workbook.addWorksheet("Sales Data");
 
@@ -788,6 +805,10 @@ const yearlydownload = async (req, res) => {
     { header: "totalOrders", key: "totalOrders", width: 10 },
     { header: "totalRevenue", key: "totalRevenue", width: 20 },
   ];
+  const year = req.params.yearly;
+  const yearlyorders = await Order.find({
+    date: { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) }
+  });
 
   yearlyorders.forEach((order) => {
     worksheet.addRow({

@@ -8,7 +8,7 @@
 
 
             <% if (dailyorders) { %>
-                <a class="btn btn-secondary ml-3 mt-3" href="/admin/dailysales/download">Download</a>
+                <a class="btn btn-secondary ml-3 mt-3" href="/admin/dailysales/download?date=<%= orderDate %>">Download</a>
                 <button class="btn btn-success ml-3 mt-3" onclick="printPage()">Print</button>
                 <div class="container mt-3">
                     <table class="table">
@@ -81,35 +81,41 @@
         <!-- Pagination -->
         <nav aria-label="navigation">
             <ul class="pagination justify-content-end mt-50">
-                <% if (currentPage> 1) { %>
+                <% if (currentPage > 1) { %>
                     <li class="page-item">
                         <a class="page-link" href="?page=<%= currentPage - 1 %>"
-                            style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background-color: #563f03; color: #fff; text-align: center; margin: 5px; border-radius: 5px; cursor: pointer; text-decoration: none;">
+                            style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; 
+                            background-color:#563f03; color: #fff; text-align: center; margin: 5px; border-radius: 5px; 
+                            cursor: pointer; text-decoration: none;">
                             Prev
                         </a>
                     </li>
-                    <% } %>
-
-                    <% for (let j=1; j <=totalPages; j++) { %>
-                        <li class="page-item <% if (j === currentPage) { %>active<% } %>">
-                          <a class="page-link" href="?page=<%= j %>" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; 
-                                background-color:#563f03; color: #fff; text-align: center; margin: 5px; border-radius: 5px;
-                                 cursor: pointer; text-decoration: none;">
+                <% } %>
+        
+                <% for (let j = 1; j <= totalPages; j++) { %>
+                    <li class="page-item <% if (j === currentPage) { %>active<% } %>">
+                        <a class="page-link" href="?page=<%= j %>"
+                            style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; 
+                            background-color:#563f03; color: #fff; text-align: center; margin: 5px; border-radius: 5px;
+                             cursor: pointer; text-decoration: none;">
                             <%= j %>
-                          </a>
-                        </li>
-                        <% } %>
-
-                                <% if (currentPage < totalPages) { %>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<%= currentPage + 1 %>"
-                                            style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background-color: #563f03; color: #fff; text-align: center; margin: 5px; border-radius: 5px; cursor: pointer; text-decoration: none;">
-                                            Next
-                                        </a>
-                                    </li>
-                                    <% } %>
+                        </a>
+                    </li>
+                <% } %>
+        
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage + 1 %>"
+                            style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; 
+                            background-color:#563f03; color: #fff; text-align: center; margin: 5px; border-radius: 5px; 
+                            cursor: pointer; text-decoration: none;">
+                            Next
+                        </a>
+                    </li>
+                <% } %>
             </ul>
         </nav>
+        
         <script>
             function printPage() {
                 window.print();
